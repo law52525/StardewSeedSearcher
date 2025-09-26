@@ -1,50 +1,30 @@
 # 星露谷搜种器 （面向用户版）
 
 ## 项目命名与结构示意图
-
+```
 StardewSeedSearcher/
-
  ├── Program.cs
-
  ├── Core/
-
  │     ├── IRng.cs             // RNG 接口
-
  │     ├── NewRandom.cs        // 新随机 (Stardew 1.6 默认)
-
  │     ├── LegacyRandom.cs     // 旧随机 (Stardew pre-1.6)
-
  │     ├── SeedSimulator.cs    // 根据 RNG 运行各种预测
-
  │     └── Models/             // 数据模型
-
  ├── Features/
-
  │     ├── TravelingCart.cs
-
  │     ├── Weather.cs
-
  │     ├── Fairy.cs
-
  │     ├── MineChest.cs
-
  │     ├── DesertFestival.cs
-
  │     ├── MonsterFloors.cs
-
  │     ├── DailyDish.cs
-
  │     ├── TrashCan.cs
-
  │     ├── Geodes.cs
-
  │     ├── QiQuest.cs
-
  │     └── Buffs.cs            // 这里实现 “矿+1” buff 预测
-
  └── Utils/
-
        └── Extensions.cs
+```
 
 ## 功能愿望单
 
