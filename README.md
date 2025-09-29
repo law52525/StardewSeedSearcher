@@ -5,15 +5,24 @@
 ```
 StardewSeedSearcher/
 ├── StardewSeedSearcher.csproj
-├── Program.cs                          // 主程序：批量搜索
+├── Program.cs                  (主程序：批量搜索)
+├── TestRunner.cs               (测试程序：单种子验证)
 ├── Core/
-│   └── HashHelper.cs                   // 哈希和随机种子计算
+│   └── HashHelper.cs
 ├── Features/
-│   ├── ISearchFeature.cs               // 功能接口
-│   └── WeatherPredictor.cs             // 天气预测功能
+│   ├── ISearchFeature.cs       (新增：功能接口)
+│   └── WeatherPredictor.cs     (已更新：实现接口)
 └── Tests/
-    ├── TestRunner.cs                   // 测试入口
-    └── WeatherTests.cs                 // 天气测试逻辑
+    └── WeatherTests.cs
+```
+
+###运行方法
+```
+# 测试模式
+dotnet run --project StardewSeedSearcher.csproj StardewSeedSearcher.TestRunner
+
+# 搜索模式（默认）
+dotnet run --project StardewSeedSearcher.csproj StardewSeedSearcher.Program
 ```
 
 ## 功能愿望单
