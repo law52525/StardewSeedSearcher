@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StardewSeedSearcher")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e4ef26c7d694d01ae2026fdc6fd3fdda035bd41")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3e75a422a44aa0acedf76045870470ce520a7815")]
 [assembly: System.Reflection.AssemblyProductAttribute("StardewSeedSearcher")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StardewSeedSearcher")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

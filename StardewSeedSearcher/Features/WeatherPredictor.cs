@@ -8,8 +8,30 @@ namespace StardewSeedSearcher.Features
     /// 天气预测功能
     /// 预测第一年春季的天气情况
     /// </summary>
-    public class WeatherPredictor
+    public class WeatherPredictor : ISearchFeature
     {
+        /// <summary>筛选条件：春季最少雨天数</summary>
+        public int MinRainyDays { get; set; } = 10;
+
+        public string Name => "天气预测";
+        public bool IsEnabled { get; set; } = true;
+
+        /// <summary>
+        /// 检查种子是否符合筛选条件
+        /// </summary>
+        public bool Check(int gameID, bool useLegacyRandom)
+        {
+            var rainyDays = PredictSpringRain(gameID, useLegacyRandom);
+            return rainyDays.Count >= MinRainyDays;
+        }
+
+        /// <summary>
+        /// 获取配置说明
+        /// </summary>
+        public string GetConfigDescription()
+        {
+            return $"春季雨天数 >= {MinRainyDays}";
+        }
         /// <summary>
         /// 预测第一年春季的雨天日期
         /// </summary>
