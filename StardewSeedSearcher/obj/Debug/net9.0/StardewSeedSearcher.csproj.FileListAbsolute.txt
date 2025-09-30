@@ -18,3 +18,14 @@ C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\bin\Debug\net9.0\System.Da
 C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\bin\Debug\net9.0\System.Data.HashFunction.Interfaces.dll
 C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\bin\Debug\net9.0\System.Data.HashFunction.xxHash.dll
 C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\StardewS.1C4281F9.Up2Date
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\rpswa.dswa.cache.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\StardewSeedSearcher.MvcApplicationPartsAssemblyInfo.cache
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\bin\Debug\net9.0\StardewSeedSearcher.staticwebassets.endpoints.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\rjimswa.dswa.cache.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\rjsmrazor.dswa.cache.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\rjsmcshtml.dswa.cache.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\scopedcss\bundle\StardewSeedSearcher.styles.css
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\staticwebassets.build.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\staticwebassets.build.json.cache
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\staticwebassets.development.json
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\obj\Debug\net9.0\staticwebassets.build.endpoints.json

@@ -1,29 +1,4 @@
-# 星露谷搜种器 （面向用户版）
-
-## 项目命名与结构示意图
-
-```
-StardewSeedSearcher/
-├── StardewSeedSearcher.csproj
-├── Program.cs                  (主程序：批量搜索)
-├── TestRunner.cs               (测试程序：单种子验证)
-├── Core/
-│   └── HashHelper.cs
-├── Features/
-│   ├── ISearchFeature.cs       (新增：功能接口)
-│   └── WeatherPredictor.cs     (已更新：实现接口)
-└── Tests/
-    └── WeatherTests.cs
-```
-
-###运行方法
-```
-# 测试模式
-dotnet run --project StardewSeedSearcher.csproj StardewSeedSearcher.TestRunner
-
-# 搜索模式（默认）
-dotnet run --project StardewSeedSearcher.csproj StardewSeedSearcher.Program
-```
+用户下载：[Releases](https://github.com/CuiYinYin2023/StardewSeedSearcher/releases)
 
 ## 功能愿望单
 

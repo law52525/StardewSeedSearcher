@@ -1,0 +1,3 @@
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\publish\StardewSeedSearcher.pdb
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\publish\aspnetcorev2_inprocess.dll
+C:\cyy\Github\StardewSeedSearcher\StardewSeedSearcher\publish\StardewSeedSearcher.exe
