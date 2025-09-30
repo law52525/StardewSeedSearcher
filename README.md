@@ -1,4 +1,7 @@
-用户下载：[Releases](https://github.com/CuiYinYin2023/StardewSeedSearcher/releases)
+# 用户下载
+[Releases](https://github.com/CuiYinYin2023/StardewSeedSearcher/releases)
+
+点击`start.bat`运行
 
 ## 功能愿望单
 
