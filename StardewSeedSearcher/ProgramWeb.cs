@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using StardewSeedSearcher.Features;
 
 namespace StardewSeedSearcher
@@ -28,6 +29,12 @@ namespace StardewSeedSearcher
                           .AllowAnyMethod()
                           .AllowAnyHeader();
                 });
+            });
+
+            // 配置 JSON 序列化（支持字符串枚举）
+            builder.Services.ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
             // 禁用默认的日志输出（保持控制台整洁）
@@ -74,13 +81,23 @@ namespace StardewSeedSearcher
 
                 // 配置功能
                 var features = new List<ISearchFeature>();
-                if (request.WeatherEnabled)
+                if (request.WeatherConditions != null && request.WeatherConditions.Count > 0)
                 {
-                    features.Add(new WeatherPredictor
+                    var predictor = new WeatherPredictor { IsEnabled = true };
+                    
+                    foreach (var conditionDto in request.WeatherConditions)
                     {
-                        IsEnabled = true,
-                        MinRainyDays = request.MinRainyDays
-                    });
+                        var condition = new WeatherCondition
+                        {
+                            Season = conditionDto.Season,
+                            StartDay = conditionDto.StartDay,
+                            EndDay = conditionDto.EndDay,
+                            MinRainDays = conditionDto.MinRainDays
+                        };
+                        predictor.Conditions.Add(condition);
+                    }
+                    
+                    features.Add(predictor);
                 }
 
                 // 发送开始消息
@@ -242,12 +259,36 @@ namespace StardewSeedSearcher
     /// <summary>
     /// 搜索请求模型
     /// </summary>
-    internal class SearchRequest
+    public class SearchRequest
     {
+        [JsonPropertyName("startSeed")]
         public int StartSeed { get; set; }
+
+        [JsonPropertyName("endSeed")]
         public int EndSeed { get; set; }
+
+        [JsonPropertyName("useLegacyRandom")]
         public bool UseLegacyRandom { get; set; }
-        public bool WeatherEnabled { get; set; }
-        public int MinRainyDays { get; set; }
+
+        [JsonPropertyName("weatherConditions")]
+        public List<WeatherConditionDto> WeatherConditions { get; set; } = new();
+    }
+
+    /// <summary>
+    /// 天气条件 DTO（用于 JSON 反序列化）
+    /// </summary>
+    public class WeatherConditionDto
+    {
+        [JsonPropertyName("season")]
+        public Season Season { get; set; }
+
+        [JsonPropertyName("startDay")]
+        public int StartDay { get; set; }
+
+        [JsonPropertyName("endDay")]
+        public int EndDay { get; set; }
+
+        [JsonPropertyName("minRainDays")]
+        public int MinRainDays { get; set; }
     }
 }

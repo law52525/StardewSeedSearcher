@@ -8,8 +8,6 @@
     
     <!-- Web 版本的启动文件 -->
     <StartupObject>StardewSeedSearcher.ProgramWeb</StartupObject>
-    <!-- 命令行版本 -->
-    <!-- <StartupObject>StardewSeedSearcher.Program</StartupObject> -->
     <!-- 测试版本 -->
     <!-- <StartupObject>StardewSeedSearcher.TestRunner</StartupObject> -->
   </PropertyGroup>

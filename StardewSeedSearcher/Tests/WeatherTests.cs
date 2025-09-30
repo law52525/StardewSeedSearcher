@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
-using StardewSeedSearcher.Features;
 using System.Collections.Generic;
+using StardewSeedSearcher.Features;
 
 namespace StardewSeedSearcher.Tests
 {
@@ -31,46 +31,89 @@ namespace StardewSeedSearcher.Tests
 
             // 预测天气
             var predictor = new WeatherPredictor();
-            var rainyDays = predictor.PredictSpringRain(gameID, useLegacyRandom);
+            var allWeather = predictor.PredictWeather(gameID, useLegacyRandom);
+
+            // 分季节统计
+            var springRain = GetRainDaysInSeason(allWeather, 0);
+            var summerRain = GetRainDaysInSeason(allWeather, 1);
+            var fallRain = GetRainDaysInSeason(allWeather, 2);
 
             // 输出结果
             Console.WriteLine($"\n种子：{gameID}");
-            
-            if (rainyDays.Count > 0)
-            {
-                string rainyDaysStr = string.Join("，", rainyDays.Select(d => $"春{d}"));
-                Console.WriteLine($"春季雨天：{rainyDaysStr}");
-            }
-            else
-            {
-                Console.WriteLine("春季雨天：无");
-            }
-            
-            Console.WriteLine($"雨天总数：{rainyDays.Count}");
+            Console.WriteLine($"随机模式：{(useLegacyRandom ? "旧随机" : "新随机")}\n");
+
+            PrintSeasonRain("春季", springRain);
+            PrintSeasonRain("夏季", summerRain);
+            PrintSeasonRain("秋季", fallRain);
 
             // 显示所有天气详情（可选）
-            Console.Write("\n是否显示全部28天的天气详情？(y/n)：");
+            Console.Write("\n是否显示全部天气详情？(y/n)：");
             string detailInput = Console.ReadLine()?.Trim().ToLower();
             
             if (detailInput == "y" || detailInput == "yes")
             {
-                ShowDetailedWeather(gameID, useLegacyRandom, rainyDays);
+                ShowDetailedWeather(allWeather);
             }
         }
 
         /// <summary>
-        /// 显示春季所有天气详情
+        /// 获取指定季节的雨天日期
         /// </summary>
-        private static void ShowDetailedWeather(int gameID, bool useLegacy, List<int> rainyDays)
+        private static List<int> GetRainDaysInSeason(Dictionary<int, bool> weather, int season)
         {
-            Console.WriteLine("\n春季天气详情：");
-            Console.WriteLine("日期\t天气");
-            Console.WriteLine("-------------------");
-            
-            for (int day = 1; day <= 28; day++)
+            var rainyDays = new List<int>();
+            int startDay = season * 28 + 1;
+            int endDay = season * 28 + 28;
+
+            for (int absoluteDay = startDay; absoluteDay <= endDay; absoluteDay++)
             {
-                string weather = rainyDays.Contains(day) ? "雨天" : "晴天";
-                Console.WriteLine($"春{day}\t{weather}");
+                if (weather.ContainsKey(absoluteDay) && weather[absoluteDay])
+                {
+                    int dayOfMonth = ((absoluteDay - 1) % 28) + 1;
+                    rainyDays.Add(dayOfMonth);
+                }
+            }
+
+            return rainyDays;
+        }
+
+        /// <summary>
+        /// 打印季节雨天信息
+        /// </summary>
+        private static void PrintSeasonRain(string seasonName, List<int> rainyDays)
+        {
+            if (rainyDays.Count > 0)
+            {
+                string rainyDaysStr = string.Join("，", rainyDays.Select(d => $"{seasonName.Substring(0, 1)}{d}"));
+                Console.WriteLine($"{seasonName}雨天：{rainyDaysStr}");
+            }
+            else
+            {
+                Console.WriteLine($"{seasonName}雨天：无");
+            }
+            Console.WriteLine($"{seasonName}雨天总数：{rainyDays.Count}\n");
+        }
+
+        /// <summary>
+        /// 显示所有天气详情
+        /// </summary>
+        private static void ShowDetailedWeather(Dictionary<int, bool> weather)
+        {
+            Console.WriteLine("\n=== 天气详情 ===");
+            string[] seasons = { "春", "夏", "秋" };
+
+            for (int season = 0; season < 3; season++)
+            {
+                Console.WriteLine($"\n{seasons[season]}季:");
+                Console.WriteLine("日期\t天气");
+                Console.WriteLine("-------------------");
+
+                for (int dayOfMonth = 1; dayOfMonth <= 28; dayOfMonth++)
+                {
+                    int absoluteDay = season * 28 + dayOfMonth;
+                    string weatherStr = weather[absoluteDay] ? "雨天" : "晴天";
+                    Console.WriteLine($"{seasons[season]}{dayOfMonth}\t{weatherStr}");
+                }
             }
         }
     }

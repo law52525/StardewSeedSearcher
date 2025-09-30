@@ -61,7 +61,8 @@
             color: #555;
         }
 
-        .form-group input[type="number"] {
+        .form-group input[type="number"],
+        .form-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -70,7 +71,8 @@
             transition: border-color 0.3s;
         }
 
-        .form-group input[type="number"]:focus {
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -100,6 +102,90 @@
             font-weight: normal;
         }
 
+        .condition-config {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .condition-input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1.2fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .condition-input-row select,
+        .condition-input-row input {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .btn-add-condition {
+            padding: 10px 20px;
+            background: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-add-condition:hover {
+            background: #45a049;
+        }
+
+        .conditions-list {
+            margin-top: 15px;
+        }
+
+        .condition-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .condition-item-text {
+            flex: 1;
+        }
+
+        .btn-remove {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn-remove:hover {
+            background: #da190b;
+        }
+
+        .error-message {
+            color: #f44336;
+            font-size: 14px;
+            margin-top: 10px;
+            padding: 10px;
+            background: #ffebee;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
         .btn-search {
             width: 100%;
             padding: 15px;
@@ -111,15 +197,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
         }
 
         .btn-search:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-search:active {
-            transform: translateY(0);
         }
 
         .btn-search:disabled {
@@ -212,24 +295,8 @@
         }
 
         @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        .seed-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: #999;
-            padding: 40px;
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .status-message {
@@ -262,34 +329,19 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .connection-status.connected {
-            background: #4caf50;
-            color: white;
-        }
+        .connection-status.connected { background: #4caf50; color: white; }
+        .connection-status.disconnected { background: #f44336; color: white; }
+        .connection-status.connecting { background: #ff9800; color: white; }
 
-        .connection-status.disconnected {
-            background: #f44336;
-            color: white;
-        }
-
-        .connection-status.connecting {
-            background: #ff9800;
-            color: white;
-        }
-
-        /* Bilibili 链接按钮 */
-        .bilibili-link {
+        .bilibili-link, .bilibili-link-charge {
             position: fixed;
-            bottom: 20px;
             right: 20px;
-            background: #00a1d6;
             color: white;
             padding: 12px 24px;
             border-radius: 25px;
             text-decoration: none;
             font-weight: 600;
             font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0, 161, 214, 0.4);
             transition: all 0.3s;
             z-index: 1000;
             display: flex;
@@ -297,64 +349,28 @@
             gap: 8px;
         }
 
-        .bilibili-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 161, 214, 0.5);
-            background: #0090c1;
-        }
-        /* Bilibili 链接按钮 */
         .bilibili-link {
-            position: fixed;
-            bottom: 75px;  /* 改成75px，让第一个按钮在上面 */
-            right: 20px;
+            bottom: 75px;
             background: #00a1d6;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
             box-shadow: 0 4px 15px rgba(0, 161, 214, 0.4);
-            transition: all 0.3s;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .bilibili-link:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 161, 214, 0.5);
             background: #0090c1;
         }
 
-        /* Bilibili 充电按钮（黄色） */
         .bilibili-link-charge {
-            position: fixed;
-            bottom: 20px;  /* 第二个按钮在下面 */
-            right: 20px;
-            background: rgb(247, 186, 51);  /* 黄色 */
-            color: white;
-            padding: 12px 24px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
+            bottom: 20px;
+            background: rgb(247, 186, 51);
             box-shadow: 0 4px 15px rgba(247, 186, 51, 0.4);
-            transition: all 0.3s;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .bilibili-link-charge:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(247, 186, 51, 0.5);
-            background: rgb(237, 176, 41);  /* 悬停时稍微暗一点 */
+            background: rgb(237, 176, 41);
         }
 
-        /* 页脚区域 */
         .footer {
             background: white;
             border-radius: 12px;
@@ -378,10 +394,6 @@
             color: #666;
             font-size: 0.95em;
             border-bottom: 1px solid #f0f0f0;
-        }
-
-        .footer li:last-child {
-            border-bottom: none;
         }
 
         .footer li::before {
@@ -413,7 +425,7 @@
                     </div>
                     <div class="form-group">
                         <label for="endSeed">结束种子</label>
-                        <input type="number" id="endSeed" value="100000" required>
+                        <input type="number" id="endSeed" value="100000" max="2147483647" required>
                     </div>
                 </div>
 
@@ -427,25 +439,35 @@
                     <label for="weatherEnabled">启用天气预测</label>
                 </div>
 
-                <div class="form-group" id="weatherConfig">
-                    <label for="minRainy">春季最少雨天数</label>
-                    <input type="number" id="minRainy" value="15" min="0" max="28">
+                <div class="condition-config" id="weatherConfig">
+                    <h4 style="margin-bottom: 15px;">天气筛选条件</h4>
+                    
+                    <div class="condition-input-row">
+                        <select id="seasonInput">
+                            <option value="Spring">春季</option>
+                            <option value="Summer">夏季</option>
+                            <option value="Fall">秋季</option>
+                        </select>
+                        <input type="number" id="startDayInput" placeholder="起始 (1-28)" min="1" max="28" value="1">
+                        <input type="number" id="endDayInput" placeholder="结束 (1-28)" min="1" max="28" value="28">
+                        <input type="number" id="minRainInput" placeholder="最少雨天" min="1" value="10">
+                    </div>
+                    
+                    <button type="button" class="btn-add-condition" onclick="addCondition()">➕ 添加条件</button>
+                    
+                    <div class="error-message" id="conditionError"></div>
+                    
+                    <div class="conditions-list" id="conditionsList"></div>
                 </div>
 
-                <button type="submit" class="btn-search" id="searchBtn">
-                    🔍 开始搜索
-                </button>
+                <button type="submit" class="btn-search" id="searchBtn">🔍 开始搜索</button>
             </form>
 
             <div class="progress-section" id="progressSection">
-                <div class="status-message status-searching" id="statusMessage">
-                    正在搜索中...
-                </div>
-
+                <div class="status-message status-searching" id="statusMessage">正在搜索中...</div>
                 <div class="progress-bar-container">
                     <div class="progress-bar" id="progressBar">0%</div>
                 </div>
-
                 <div class="stats">
                     <div class="stat-item">
                         <div class="stat-value" id="checkedCount">0</div>
@@ -477,17 +499,14 @@
             </div>
         </div>
 
-        <!-- 后续开发计划 -->
         <div class="card footer">
             <h3>🚀 脆音音的后续开发计划</h3>
             <ul>
-                <li><span class="placeholder-text">天气功能：添加自定义筛选区间、添加多区间筛选</span></li>
                 <li><span class="placeholder-text">更多功能：猪车、仙子、混合宝箱、沙漠节商人、怪物层、春1菜品、垃圾桶、晶球、齐先生任务、矮人雕像矿+1buff等</span></li>
             </ul>
         </div>
     </div>
 
-    <!-- Bilibili 个人空间链接 -->
     <a href="https://space.bilibili.com/349111916" target="_blank" class="bilibili-link">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"/>
@@ -495,8 +514,6 @@
         联系作者
     </a>
 
-    
-    <!-- Bilibili 充电链接 -->
     <a href="https://b23.tv/LSj8aCw" target="_blank" class="bilibili-link-charge">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.813 4.653h.854c1.51.054 2.769.578 3.773 1.574 1.004.995 1.524 2.249 1.56 3.76v7.36c-.036 1.51-.556 2.769-1.56 3.773s-2.262 1.524-3.773 1.56H5.333c-1.51-.036-2.769-.556-3.773-1.56S.036 18.858 0 17.347v-7.36c.036-1.511.556-2.765 1.56-3.76 1.004-.996 2.262-1.52 3.773-1.574h.774l-1.174-1.12a1.234 1.234 0 0 1-.373-.906c0-.356.124-.658.373-.907l.027-.027c.267-.249.573-.373.92-.373.347 0 .653.124.92.373L9.653 4.44c.071.071.134.142.187.213h4.267a.836.836 0 0 1 .16-.213l2.853-2.747c.267-.249.573-.373.92-.373.347 0 .662.151.929.4.267.249.391.551.391.907 0 .355-.124.657-.373.906zM5.333 7.24c-.746.018-1.373.276-1.88.773-.506.498-.769 1.13-.786 1.894v7.52c.017.764.28 1.395.786 1.893.507.498 1.134.756 1.88.773h13.334c.746-.017 1.373-.275 1.88-.773.506-.498.769-1.129.786-1.893v-7.52c-.017-.765-.28-1.396-.786-1.894-.507-.497-1.134-.755-1.88-.773zM8 11.107c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c0-.373.129-.689.386-.947.258-.257.574-.386.947-.386zm8 0c.373 0 .684.124.933.373.25.249.383.569.4.96v1.173c-.017.391-.15.711-.4.96-.249.25-.56.374-.933.374s-.684-.125-.933-.374c-.25-.249-.383-.569-.4-.96V12.44c.017-.391.15-.711.4-.96.249-.249.56-.373.933-.373Z"/>
@@ -507,6 +524,7 @@
     <script>
         let ws = null;
         let foundSeeds = [];
+        let conditions = [];
 
         const elements = {
             form: document.getElementById('searchForm'),
@@ -523,15 +541,111 @@
             resultsSummary: document.getElementById('resultsSummary'),
             connectionStatus: document.getElementById('connectionStatus'),
             weatherEnabled: document.getElementById('weatherEnabled'),
-            weatherConfig: document.getElementById('weatherConfig')
+            weatherConfig: document.getElementById('weatherConfig'),
+            conditionsList: document.getElementById('conditionsList'),
+            conditionError: document.getElementById('conditionError')
         };
 
-        // 天气功能开关
         elements.weatherEnabled.addEventListener('change', (e) => {
             elements.weatherConfig.style.display = e.target.checked ? 'block' : 'none';
         });
 
-        // WebSocket 连接
+        function showError(message) {
+            elements.conditionError.textContent = message;
+            elements.conditionError.classList.add('show');
+        }
+
+        function hideError() {
+            elements.conditionError.classList.remove('show');
+        }
+
+        function addCondition() {
+            const season = document.getElementById('seasonInput').value;
+            const startDay = parseInt(document.getElementById('startDayInput').value);
+            const endDay = parseInt(document.getElementById('endDayInput').value);
+            const minRain = parseInt(document.getElementById('minRainInput').value);
+
+            if (!startDay || !endDay || !minRain) {
+                showError('请填写完整的条件信息');
+                return;
+            }
+
+            if (startDay < 1 || startDay > 28 || endDay < 1 || endDay > 28) {
+                showError('日期必须在 1-28 之间');
+                return;
+            }
+
+            if (startDay > endDay) {
+                showError('起始日期必须小于等于结束日期');
+                return;
+            }
+
+            const dayCount = endDay - startDay + 1;
+            if (minRain < 1 || minRain > dayCount) {
+                showError(`最少雨天数必须在 1-${dayCount} 之间`);
+                return;
+            }
+
+            if (conditions.length >= 10) {
+                showError('最多只能添加 10 个条件');
+                return;
+            }
+
+            const newCondition = { season, startDay, endDay, minRain };
+            if (hasOverlap(newCondition)) {
+                showError('此条件与已有条件的日期范围重叠');
+                return;
+            }
+
+            conditions.push(newCondition);
+            renderConditions();
+            hideError();
+
+            document.getElementById('startDayInput').value = 1;
+            document.getElementById('endDayInput').value = 28;
+            document.getElementById('minRainInput').value = 10;
+        }
+
+        function hasOverlap(newCondition) {
+            const seasonOffset = { 'Spring': 0, 'Summer': 28, 'Fall': 56 };
+            const newStart = seasonOffset[newCondition.season] + newCondition.startDay;
+            const newEnd = seasonOffset[newCondition.season] + newCondition.endDay;
+
+            for (const cond of conditions) {
+                const start = seasonOffset[cond.season] + cond.startDay;
+                const end = seasonOffset[cond.season] + cond.endDay;
+
+                if (!(newEnd < start || end < newStart)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function renderConditions() {
+            const seasonNames = { 'Spring': '春', 'Summer': '夏', 'Fall': '秋' };
+            
+            if (conditions.length === 0) {
+                elements.conditionsList.innerHTML = '';
+                return;
+            }
+
+            elements.conditionsList.innerHTML = conditions.map((cond, index) => `
+                <div class="condition-item">
+                    <div class="condition-item-text">
+                        ${seasonNames[cond.season]}${cond.startDay}-${seasonNames[cond.season]}${cond.endDay}: 最少${cond.minRain}个雨天
+                    </div>
+                    <button type="button" class="btn-remove" onclick="removeCondition(${index})">删除</button>
+                </div>
+            `).join('');
+        }
+
+        function removeCondition(index) {
+            conditions.splice(index, 1);
+            renderConditions();
+            hideError();
+        }
+
         function connectWebSocket() {
             elements.connectionStatus.textContent = '连接中...';
             elements.connectionStatus.className = 'connection-status connecting';
@@ -539,7 +653,6 @@
             ws = new WebSocket('ws://localhost:5000/ws');
 
             ws.onopen = () => {
-                console.log('WebSocket 连接成功');
                 elements.connectionStatus.textContent = '✓ 已连接';
                 elements.connectionStatus.className = 'connection-status connected';
             };
@@ -549,23 +662,18 @@
                 handleWebSocketMessage(data);
             };
 
-            ws.onerror = (error) => {
-                console.error('WebSocket 错误:', error);
+            ws.onerror = () => {
                 elements.connectionStatus.textContent = '✗ 连接失败';
                 elements.connectionStatus.className = 'connection-status disconnected';
             };
 
             ws.onclose = () => {
-                console.log('WebSocket 连接关闭');
                 elements.connectionStatus.textContent = '✗ 未连接';
                 elements.connectionStatus.className = 'connection-status disconnected';
-                
-                // 5秒后重连
                 setTimeout(connectWebSocket, 5000);
             };
         }
 
-        // 处理 WebSocket 消息
         function handleWebSocketMessage(data) {
             switch (data.type) {
                 case 'start':
@@ -586,7 +694,6 @@
                     foundSeeds.push(data.seed);
                     elements.foundCount.textContent = foundSeeds.length;
                     
-                    // 只显示前20个
                     if (foundSeeds.length <= 20) {
                         const seedItem = document.createElement('div');
                         seedItem.className = 'seed-item';
@@ -607,14 +714,12 @@
             }
         }
 
-        // 更新结果摘要
         function updateResultsSummary() {
             const total = foundSeeds.length;
             const shown = Math.min(total, 20);
             elements.resultsSummary.textContent = `共找到 ${total} 个 (显示前 ${shown} 个)`;
         }
 
-        // 表单提交
         elements.form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
@@ -622,14 +727,22 @@
             const endSeed = parseInt(document.getElementById('endSeed').value);
             const useLegacy = document.getElementById('useLegacy').checked;
             const weatherEnabled = elements.weatherEnabled.checked;
-            const minRainy = parseInt(document.getElementById('minRainy').value);
 
             if (startSeed >= endSeed) {
                 alert('结束种子必须大于起始种子！');
                 return;
             }
 
-            // 显示进度区域
+            if (endSeed > 2147483647) {
+                alert('结束种子不能超过 2147483647！');
+                return;
+            }
+
+            if (weatherEnabled && conditions.length === 0) {
+                alert('请至少添加一个天气筛选条件！');
+                return;
+            }
+
             elements.progressSection.style.display = 'block';
             elements.resultsSection.style.display = 'block';
             elements.searchBtn.disabled = true;
@@ -639,13 +752,19 @@
             elements.progressBar.style.width = '0%';
             elements.progressBar.textContent = '0%';
 
-            // 重置统计
             elements.checkedCount.textContent = '0';
             elements.foundCount.textContent = '0';
             elements.speed.textContent = '0';
             elements.elapsed.textContent = '0.0s';
 
             try {
+                const weatherConditions = weatherEnabled ? conditions.map(c => ({
+                    season: c.season,
+                    startDay: c.startDay,
+                    endDay: c.endDay,
+                    minRainDays: c.minRain
+                })) : [];
+
                 const response = await fetch('http://localhost:5000/api/search', {
                     method: 'POST',
                     headers: {
@@ -655,8 +774,7 @@
                         startSeed,
                         endSeed,
                         useLegacyRandom: useLegacy,
-                        weatherEnabled,
-                        minRainyDays: minRainy
+                        weatherConditions
                     })
                 });
 
@@ -671,7 +789,6 @@
             }
         });
 
-        // 初始化 WebSocket 连接
         connectWebSocket();
     </script>
 </body>
