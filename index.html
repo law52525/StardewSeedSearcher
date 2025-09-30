@@ -404,6 +404,64 @@
             color: #999;
             font-style: italic;
         }
+
+        .guide-details {
+            border: 2px solid #0865b5;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            padding: 12px 20px;
+            background-color: #1282e5;
+            transition: background-color 0.3s;
+        }
+
+        .guide-details[open] {
+            background-color: #1282e5;
+        }
+
+        .guide-summary {
+            font-weight: 600;
+            color: #ffffff;
+            cursor: pointer;
+            outline: none; /* 移除点击时的焦点框 */
+        }
+        
+        .guide-summary::-webkit-details-marker {
+            display: none; /* 隐藏 Chrome/Safari 的默认箭头 */
+        }
+
+        .guide-summary {
+            list-style: none; /* 隐藏 Firefox 的默认箭头 */
+        }
+
+        .guide-summary::before {
+            content: '▶';
+            display: inline-block;
+            font-size: 0.8em;
+            margin-right: 8px;
+            transition: transform 0.2s;
+            vertical-align: middle;
+        }
+
+        .guide-details[open] > .guide-summary::before {
+            transform: rotate(90deg);
+        }
+
+        .guide-list {
+            margin-top: 15px;
+            padding-left: 25px;
+            color: #ffffff;
+            font-size: 0.95em;
+            border-top: 1px solid #ececec;
+            padding-top: 15px;
+        }
+
+        .guide-list li {
+            margin-bottom: 8px;
+        }
+        .guide-list li:last-child {
+            margin-bottom: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -417,6 +475,13 @@
 
         <div class="card">
             <form id="searchForm">
+                <details class="guide-details">
+                    <summary class="guide-summary">操作指南</summary>
+                    <ul class="guide-list">
+                        <li>如果搜索无响应或出现 Bug，请<strong>完全关闭黑色的程序窗口</strong>和此页面，然后再重新运行start.bat。仅刷新页面可能无法解决问题。</li>
+                        <!-- 未来可以填写更多说明 -->
+                    </ul>
+                </details>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="startSeed">起始种子</label>
@@ -457,7 +522,7 @@
                         </div>
                     </div>
                     
-                    <button type="button" class="btn-add-condition" onclick="addCondition()">➕ 添加条件</button>
+                    <button type="button" class="btn-add-condition" onclick="addCondition()">添加条件</button>
                     
                     <div class="error-message" id="conditionError"></div>
                 </div>
@@ -701,8 +766,9 @@
                     elements.checkedCount.textContent = data.checkedCount.toLocaleString();
                     elements.speed.textContent = data.speed.toLocaleString();
                     elements.elapsed.textContent = data.elapsed + 's';
-                    elements.progressBar.style.width = data.progress + '%';
-                    elements.progressBar.textContent = data.progress + '%';
+                    const progressInt = Math.floor(data.progress);
+                    elements.progressBar.style.width = progressInt + '%';
+                    elements.progressBar.textContent = progressInt + '%';
                     break;
 
                 case 'found':
