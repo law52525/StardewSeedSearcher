@@ -109,21 +109,6 @@
             margin-top: 20px;
         }
 
-        .condition-input-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1.2fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .condition-input-row select,
-        .condition-input-row input {
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
         .btn-add-condition {
             padding: 10px 20px;
             background: #4caf50;
@@ -139,37 +124,51 @@
             background: #45a049;
         }
 
-        .conditions-list {
-            margin-top: 15px;
+        .conditions-container {
+            margin-bottom: 15px;
         }
 
-        .condition-item {
-            background: white;
-            padding: 12px 15px;
-            border-radius: 6px;
-            margin-bottom: 8px;
+        .condition-row {
             display: flex;
-            justify-content: space-between;
+            gap: 10px;
             align-items: center;
-            border-left: 4px solid #667eea;
+            margin-bottom: 10px;
+            padding: 12px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
         }
 
-        .condition-item-text {
+        .condition-row select,
+        .condition-row input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .condition-row select {
+            flex: 0 0 100px;
+        }
+
+        .condition-row input {
             flex: 1;
+            min-width: 80px;
         }
 
         .btn-remove {
-            background: #f44336;
+            padding: 6px 12px;
+            background-color: #ff4444;
             color: white;
             border: none;
-            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 14px;
+            white-space: nowrap;
         }
 
         .btn-remove:hover {
-            background: #da190b;
+            background-color: #cc0000;
         }
 
         .error-message {
@@ -442,22 +441,25 @@
                 <div class="condition-config" id="weatherConfig">
                     <h4 style="margin-bottom: 15px;">天气筛选条件</h4>
                     
-                    <div class="condition-input-row">
-                        <select id="seasonInput">
-                            <option value="Spring">春季</option>
-                            <option value="Summer">夏季</option>
-                            <option value="Fall">秋季</option>
-                        </select>
-                        <input type="number" id="startDayInput" placeholder="起始 (1-28)" min="1" max="28" value="1">
-                        <input type="number" id="endDayInput" placeholder="结束 (1-28)" min="1" max="28" value="28">
-                        <input type="number" id="minRainInput" placeholder="最少雨天" min="1" value="10">
+                    <!-- 新的容器,用来放所有可编辑的条件行 -->
+                    <div class="conditions-container" id="conditionsContainer">
+                        <!-- 第一个编辑框(初始存在) -->
+                        <div class="condition-row" data-index="0">
+                            <select onchange="updateCondition(0)">
+                                <option value="Spring">春季</option>
+                                <option value="Summer">夏季</option>
+                                <option value="Fall">秋季</option>
+                            </select>
+                            <input type="number" placeholder="起始 (1-28)" min="1" max="28" value="1" onchange="updateCondition(0)">
+                            <input type="number" placeholder="结束 (1-28)" min="1" max="28" value="28" onchange="updateCondition(0)">
+                            <input type="number" placeholder="最少雨天" min="1" value="10" onchange="updateCondition(0)">
+                            <button type="button" class="btn-remove" onclick="removeCondition(0)">删除</button>
+                        </div>
                     </div>
                     
                     <button type="button" class="btn-add-condition" onclick="addCondition()">➕ 添加条件</button>
                     
                     <div class="error-message" id="conditionError"></div>
-                    
-                    <div class="conditions-list" id="conditionsList"></div>
                 </div>
 
                 <button type="submit" class="btn-search" id="searchBtn">🔍 开始搜索</button>
@@ -525,6 +527,7 @@
         let ws = null;
         let foundSeeds = [];
         let conditions = [];
+        let nextIndex = 1;
 
         const elements = {
             form: document.getElementById('searchForm'),
@@ -550,100 +553,112 @@
             elements.weatherConfig.style.display = e.target.checked ? 'block' : 'none';
         });
 
-        function showError(message) {
-            elements.conditionError.textContent = message;
-            elements.conditionError.classList.add('show');
-        }
+        // 初始化第一个条件(放在页面加载后执行)
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCondition(0);
+        });
 
-        function hideError() {
-            elements.conditionError.classList.remove('show');
-        }
-
+        // 添加新条件
         function addCondition() {
-            const season = document.getElementById('seasonInput').value;
-            const startDay = parseInt(document.getElementById('startDayInput').value);
-            const endDay = parseInt(document.getElementById('endDayInput').value);
-            const minRain = parseInt(document.getElementById('minRainInput').value);
+            const container = document.getElementById('conditionsContainer');
+            const index = nextIndex++;
+            
+            const newRow = document.createElement('div');
+            newRow.className = 'condition-row';
+            newRow.setAttribute('data-index', index);
+            newRow.innerHTML = `
+                <select onchange="updateCondition(${index})">
+                    <option value="Spring">春季</option>
+                    <option value="Summer">夏季</option>
+                    <option value="Fall">秋季</option>
+                </select>
+                <input type="number" placeholder="起始 (1-28)" min="1" max="28" value="1" onchange="updateCondition(${index})">
+                <input type="number" placeholder="结束 (1-28)" min="1" max="28" value="28" onchange="updateCondition(${index})">
+                <input type="number" placeholder="最少雨天" min="1" value="10" onchange="updateCondition(${index})">
+                <button type="button" class="btn-remove" onclick="removeCondition(${index})">删除</button>
+            `;
+            
+            container.appendChild(newRow);
+            updateCondition(index);
+            hideError();
+        }
 
-            if (!startDay || !endDay || !minRain) {
-                showError('请填写完整的条件信息');
-                return;
+        // 更新条件数据
+        function updateCondition(index) {
+            const row = document.querySelector(`.condition-row[data-index="${index}"]`);
+            if (!row) return;
+            
+            const inputs = row.querySelectorAll('select, input');
+            const season = inputs[0].value;
+            const startDay = parseInt(inputs[1].value) || 1;
+            const endDay = parseInt(inputs[2].value) || 28;
+            const minRain = parseInt(inputs[3].value) || 1;
+            
+            conditions[index] = { season, startDay, endDay, minRain };
+        }
+
+        // 删除条件
+        function removeCondition(index) {
+            const row = document.querySelector(`.condition-row[data-index="${index}"]`);
+            if (row) {
+                row.remove();
+                delete conditions[index];
+                hideError();
             }
+        }
 
+        // 验证单个条件
+        function validateCondition(condition) {
+            if (!condition) return { valid: false, error: '条件数据缺失' };
+            
+            const { startDay, endDay, minRain } = condition;
+            
             if (startDay < 1 || startDay > 28 || endDay < 1 || endDay > 28) {
-                showError('日期必须在 1-28 之间');
-                return;
+                return { valid: false, error: '日期必须在 1-28 之间' };
             }
-
+            
             if (startDay > endDay) {
-                showError('起始日期必须小于等于结束日期');
-                return;
+                return { valid: false, error: '起始日期必须小于等于结束日期' };
             }
-
+            
             const dayCount = endDay - startDay + 1;
             if (minRain < 1 || minRain > dayCount) {
-                showError(`最少雨天数必须在 1-${dayCount} 之间`);
-                return;
+                return { valid: false, error: `最少雨天数必须在 1-${dayCount} 之间` };
             }
-
-            if (conditions.length >= 10) {
-                showError('最多只能添加 10 个条件');
-                return;
-            }
-
-            const newCondition = { season, startDay, endDay, minRain };
-            if (hasOverlap(newCondition)) {
-                showError('此条件与已有条件的日期范围重叠');
-                return;
-            }
-
-            conditions.push(newCondition);
-            renderConditions();
-            hideError();
-
-            document.getElementById('startDayInput').value = 1;
-            document.getElementById('endDayInput').value = 28;
-            document.getElementById('minRainInput').value = 10;
+            
+            return { valid: true };
         }
 
-        function hasOverlap(newCondition) {
-            const seasonOffset = { 'Spring': 0, 'Summer': 28, 'Fall': 56 };
-            const newStart = seasonOffset[newCondition.season] + newCondition.startDay;
-            const newEnd = seasonOffset[newCondition.season] + newCondition.endDay;
-
-            for (const cond of conditions) {
-                const start = seasonOffset[cond.season] + cond.startDay;
-                const end = seasonOffset[cond.season] + cond.endDay;
-
-                if (!(newEnd < start || end < newStart)) {
-                    return true;
+        // 检查条件重叠
+        function hasOverlap(newCondition, excludeIndex) {
+            const validConditions = conditions.filter((c, i) => c && i !== excludeIndex);
+            
+            for (let condition of validConditions) {
+                if (condition.season === newCondition.season) {
+                    if (!(newCondition.endDay < condition.startDay || newCondition.startDay > condition.endDay)) {
+                        return true;
+                    }
                 }
             }
             return false;
         }
 
-        function renderConditions() {
-            const seasonNames = { 'Spring': '春', 'Summer': '夏', 'Fall': '秋' };
-            
-            if (conditions.length === 0) {
-                elements.conditionsList.innerHTML = '';
-                return;
-            }
-
-            elements.conditionsList.innerHTML = conditions.map((cond, index) => `
-                <div class="condition-item">
-                    <div class="condition-item-text">
-                        ${seasonNames[cond.season]}${cond.startDay}-${seasonNames[cond.season]}${cond.endDay}: 最少${cond.minRain}个雨天
-                    </div>
-                    <button type="button" class="btn-remove" onclick="removeCondition(${index})">删除</button>
-                </div>
-            `).join('');
+        // 显示错误
+        function showError(message) {
+            const errorDiv = document.getElementById('conditionError');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            errorDiv.style.display = 'block'; 
         }
 
-        function removeCondition(index) {
-            conditions.splice(index, 1);
-            renderConditions();
-            hideError();
+        // 隐藏错误
+        function hideError() {
+            const errorDiv = document.getElementById('conditionError');
+            if (errorDiv) {
+                errorDiv.textContent = '';
+                errorDiv.classList.remove('show');
+                errorDiv.style.display = 'none';  
+            }
         }
 
         function connectWebSocket() {
@@ -741,6 +756,35 @@
             if (weatherEnabled && conditions.length === 0) {
                 alert('请至少添加一个天气筛选条件！');
                 return;
+            }
+
+            if (weatherEnabled) {
+                hideError();
+                
+                // 获取所有有效条件
+                const validConditions = conditions.filter(c => c);
+                
+                if (validConditions.length === 0) {
+                    showError('请至少添加一个条件');
+                    return;
+                }
+                
+                // 验证所有条件
+                for (let i = 0; i < conditions.length; i++) {
+                    const condition = conditions[i];
+                    if (!condition) continue;
+                    
+                    const validation = validateCondition(condition);
+                    if (!validation.valid) {
+                        showError(`条件 ${i + 1}: ${validation.error}`);
+                        return;
+                    }
+                    
+                    if (hasOverlap(condition, i)) {
+                        showError(`条件 ${i + 1}: 与其他条件的日期范围重叠`);
+                        return;
+                    }
+                }
             }
 
             elements.progressSection.style.display = 'block';
