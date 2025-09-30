@@ -130,6 +130,11 @@ namespace StardewSeedSearcher
                                 type = "found",
                                 seed = seed
                             });
+                            
+                            if (results.Count >= request.OutputLimit)
+                            {
+                                break; // 达到上限，跳出 for 循环，提前结束搜索
+                            }
                         }
 
                         // 每 100 个种子更新一次进度（避免过于频繁）
@@ -155,23 +160,28 @@ namespace StardewSeedSearcher
                 stopwatch.Stop();
 
                 // 发送完成消息
+                // 发送最后一次精确的进度更新。
+                // 这确保了即使用户的搜索范围小于100，或者搜索提前结束，
+                // 前端的进度条和统计数据也能更新到循环终止时的确切状态。
+                double finalProgress = (double)checkedCount / totalSeeds * 100;
+                await BroadcastMessage(new
+                {
+                    type = "progress",
+                    checkedCount = checkedCount,
+                    progress = Math.Floor(finalProgress), // 这里也取整
+                    speed = Math.Round(checkedCount / stopwatch.Elapsed.TotalSeconds, 0),
+                    elapsed = Math.Round(stopwatch.Elapsed.TotalSeconds, 1)
+                });
+
+                // 广播“完成”消息
                 await BroadcastMessage(new
                 {
                     type = "complete",
                     totalFound = results.Count,
-                    totalChecked = totalSeeds,
-                    elapsedSeconds = Math.Round(stopwatch.Elapsed.TotalSeconds, 2),
-                    speed = Math.Round(totalSeeds / stopwatch.Elapsed.TotalSeconds, 0)
+                    elapsed = Math.Round(stopwatch.Elapsed.TotalSeconds, 1)
                 });
 
-                return Results.Ok(new
-                {
-                    success = true,
-                    results = results.Take(20).ToList(),
-                    totalFound = results.Count,
-                    totalChecked = totalSeeds,
-                    elapsedSeconds = stopwatch.Elapsed.TotalSeconds
-                });
+                return Results.Ok(new { message = "Search started." });
             });
 
             // 健康检查
@@ -272,6 +282,9 @@ namespace StardewSeedSearcher
 
         [JsonPropertyName("weatherConditions")]
         public List<WeatherConditionDto> WeatherConditions { get; set; } = new();
+
+        [JsonPropertyName("outputLimit")]
+        public int OutputLimit { get; set; }
     }
 
     /// <summary>
