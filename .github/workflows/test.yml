@@ -36,7 +36,7 @@ jobs:
     
     - name: Verify dependencies
       run: go mod verify
-    
+
     - name: Run all tests
       run: go test -v -race -timeout=20m $(go list ./... | grep -v internal/handlers)
     
@@ -67,9 +67,3 @@ jobs:
     
     - name: Build for macOS
       run: GOOS=darwin GOARCH=amd64 go build -o stardew-seed-searcher-macos .
-    
-    - name: Test builds
-      run: |
-        ./stardew-seed-searcher-linux --help || echo "Linux build successful"
-        file stardew-seed-searcher-windows.exe || echo "Windows build successful"
-        file stardew-seed-searcher-macos || echo "macOS build successful"
