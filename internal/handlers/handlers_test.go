@@ -6,6 +6,51 @@ import (
 	"testing"
 )
 
+// TestSearchConsistencySample1 测试样例1: 春季前10天7个雨天
+func TestSearchConsistencySample1(t *testing.T) {
+	// 测试样例1: 春季前10天7个雨天
+	startSeed := 50000
+	endSeed := 100000
+	useLegacyRandom := false
+	weatherConditions := []models.WeatherCondition{
+		{Season: models.Spring, StartDay: 1, EndDay: 10, MinRainDays: 7},
+	}
+	outputLimit := 100
+	expectedSeeds := []int{61522, 82965}
+
+	// 创建天气预测器
+	predictor := features.NewWeatherPredictor()
+	predictor.SetEnabled(true)
+	for _, condition := range weatherConditions {
+		predictor.AddCondition(condition)
+	}
+
+	// 执行搜索
+	var results []int
+	for seed := startSeed; seed <= endSeed; seed++ {
+		if predictor.Check(seed, useLegacyRandom) {
+			results = append(results, seed)
+			if len(results) >= outputLimit {
+				break
+			}
+		}
+	}
+
+	// 验证结果
+	if len(results) != len(expectedSeeds) {
+		t.Errorf("期望找到 %d 个种子，实际找到 %d 个", len(expectedSeeds), len(results))
+		return
+	}
+
+	for i, expectedSeed := range expectedSeeds {
+		if i >= len(results) || results[i] != expectedSeed {
+			t.Errorf("第 %d 个种子期望 %d，实际 %d", i+1, expectedSeed, results[i])
+		}
+	}
+
+	t.Logf("样例1测试通过: 找到 %d 个符合条件的种子", len(results))
+}
+
 // TestSearchConsistency 测试Go版本和C#版本的搜索结果一致性
 func TestSearchConsistency(t *testing.T) {
 	testCases := []struct {
