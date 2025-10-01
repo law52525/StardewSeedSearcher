@@ -2,7 +2,7 @@ package handler
 
 import (
 	"net/http"
-	"stardew-seed-searcher/internal/server"
+	"stardew-seed-searcher/pkg/server"
 )
 
 // 全局服务器实例

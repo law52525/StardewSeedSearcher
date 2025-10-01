@@ -2,8 +2,8 @@ package features
 
 import (
 	"fmt"
-	"stardew-seed-searcher/internal/core"
-	"stardew-seed-searcher/internal/models"
+	"stardew-seed-searcher/pkg/core"
+	"stardew-seed-searcher/pkg/models"
 )
 
 // 预计算的哈希常量，避免重复计算

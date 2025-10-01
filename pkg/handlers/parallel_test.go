@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"sort"
-	"stardew-seed-searcher/internal/features"
-	"stardew-seed-searcher/internal/models"
+	"stardew-seed-searcher/pkg/features"
+	"stardew-seed-searcher/pkg/models"
 	"sync"
 	"sync/atomic"
 	"testing"

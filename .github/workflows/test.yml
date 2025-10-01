@@ -41,7 +41,7 @@ jobs:
       run: go test -v -race -timeout=20m $(go list ./... | grep -v internal/handlers)
     
     - name: Run consistency tests
-      run: go test -v -timeout=15m ./internal/handlers -run TestSearchConsistencySample1
+      run: go test -v -timeout=15m ./pkg/handlers -run TestSearchConsistencySample1
 
   build:
     runs-on: ubuntu-latest

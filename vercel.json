@@ -8,7 +8,7 @@
         "buildCommand": "go build -o main api/index.go",
         "outputDirectory": ".",
         "includeFiles": [
-          "internal/**/*",
+          "pkg/**/*",
           "go.mod",
           "go.sum"
         ]

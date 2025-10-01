@@ -80,7 +80,7 @@ go test ./internal/core
 StardewSeedSearcher/
 ├── cmd/                   # 运行入口
 │   └── main.go            # 主程序入口
-├── internal/
+├── pkg/
 │   ├── core/              # 核心功能
 │   │   ├── hash_helper.go
 │   │   └── hash_helper_test.go

@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 	"os"
-	"stardew-seed-searcher/internal/server"
+	"stardew-seed-searcher/pkg/server"
 )
 
 func main() {

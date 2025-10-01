@@ -1,7 +1,7 @@
 package features
 
 import (
-	"stardew-seed-searcher/internal/models"
+	"stardew-seed-searcher/pkg/models"
 	"testing"
 )
 

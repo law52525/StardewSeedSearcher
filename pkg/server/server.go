@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"stardew-seed-searcher/internal/handlers"
-	"stardew-seed-searcher/internal/websocket"
+	"stardew-seed-searcher/pkg/handlers"
+	"stardew-seed-searcher/pkg/websocket"
 	"time"
 
 	gorilla "github.com/gorilla/websocket"
