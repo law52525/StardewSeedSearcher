@@ -103,7 +103,8 @@ StardewSeedSearcher/
 │   ├── test.yml          # 测试工作流
 │   ├── release.yml       # 发布工作流
 │   └── status.yml        # 状态工作流
-├── main.go               # Vercel入口 (package handler)
+├── api/
+│   └── index.go          # Vercel入口 (package main)
 ├── vercel.json           # Vercel配置
 ├── go.mod                # Go 模块文件
 ├── go.sum                # 依赖校验文件
