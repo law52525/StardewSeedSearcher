@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"net/http"
@@ -16,9 +16,4 @@ func init() {
 // Handler 是Vercel的入口点
 func Handler(w http.ResponseWriter, r *http.Request) {
 	srv.ServeHTTP(w, r)
-}
-
-// main函数用于Vercel (Vercel会直接调用Handler函数，不会执行main)
-func main() {
-	// 空函数 - Vercel使用Handler作为入口点
 }
