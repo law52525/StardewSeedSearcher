@@ -81,9 +81,11 @@ jobs:
         sha256sum stardew-seed-searcher*.tar.gz stardew-seed-searcher*.zip > checksums.txt
         cat checksums.txt
     
-    - name: Create release
+    - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
         files: |
           stardew-seed-searcher-linux-amd64.tar.gz
           stardew-seed-searcher-linux-arm64.tar.gz
@@ -92,20 +94,31 @@ jobs:
           stardew-seed-searcher-windows-amd64.zip
           stardew-seed-searcher-windows-arm64.zip
           checksums.txt
-        generate_release_notes: false
         draft: false
         prerelease: false
         body: |
-          # 使用说明
+          ## 星露谷种子搜索器 Release ${{ github.ref_name }}
           
-          ## 快速开始
+          This release contains pre-built binaries for:
+          - **Linux**: amd64, arm64
+          - **macOS**: amd64, arm64  
+          - **Windows**: amd64, arm64
           
-          ### Windows
+          ### 文件说明:
+          - `stardew-seed-searcher` / `stardew-seed-searcher.exe` - 主程序
+          - `start.sh` / `start.bat` - 启动脚本
+          - `index.html` - 网页界面
+          - `README.md` - 详细说明文档
+          - `stardew-seed-searcher.log` - 程序日志（运行后生成）
+          
+          ### 快速开始:
+          
+          **Windows:**
           1. 解压下载的zip文件
           2. 双击 `start.bat` 启动程序
           3. 浏览器会自动打开搜索界面
           
-          ### Linux/macOS
+          **Linux/macOS:**
           1. 解压下载的tar.gz文件
           2. 运行启动脚本：
              ```bash
@@ -114,20 +127,12 @@ jobs:
              ```
           3. 浏览器会自动打开搜索界面
           
-          ## 文件说明
+          ### 停止程序:
           
-          - `stardew-seed-searcher` / `stardew-seed-searcher.exe` - 主程序
-          - `start.sh` / `start.bat` - 启动脚本
-          - `index.html` - 网页界面
-          - `README.md` - 详细说明文档
-          - `stardew-seed-searcher.log` - 程序日志（运行后生成）
-          
-          ## 停止程序
-          
-          ### Windows
+          **Windows:**
           关闭命令行窗口或按 Ctrl+C
           
-          ### Linux/macOS
+          **Linux/macOS:**
           ```bash
           # 查看进程
           ps aux | grep stardew-seed-searcher
@@ -136,15 +141,12 @@ jobs:
           pkill -f stardew-seed-searcher
           ```
           
-          ## 故障排除
-          
+          ### 故障排除:
           1. **端口被占用**: 程序使用5000端口，确保端口未被占用
           2. **权限问题**: Linux/macOS需要给脚本添加执行权限
           3. **浏览器无法打开**: 手动打开 `index.html` 文件
           4. **查看日志**: 检查 `stardew-seed-searcher.log` 文件
           
-          ## 更多信息
-          
-          详细使用说明请查看 `README.md` 文件。
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          **Note:** 详细使用说明请查看 `README.md` 文件。
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
