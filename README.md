@@ -57,7 +57,7 @@ go run main.go
 
 ```bash
 # 构建
-go build -o stardew-seed-searcher.exe .
+go build -o stardew-seed-searcher.exe ./cmd
 
 # 运行
 ./stardew-seed-searcher.exe
@@ -78,6 +78,8 @@ go test ./internal/core
 
 ```
 StardewSeedSearcher/
+├── cmd/                   # 运行入口
+│   └── main.go            # 主程序入口
 ├── internal/
 │   ├── core/              # 核心功能
 │   │   ├── hash_helper.go
@@ -87,7 +89,9 @@ StardewSeedSearcher/
 │   │   ├── weather_predictor.go
 │   │   └── weather_predictor_test.go
 │   ├── handlers/          # HTTP 处理器
-│   │   └── handlers.go
+│   │   ├── handlers.go
+│   │   ├── handlers_test.go
+│   │   └── parallel_test.go
 │   ├── models/            # 数据模型
 │   │   └── models.go
 │   ├── server/            # Web 服务器
@@ -95,10 +99,18 @@ StardewSeedSearcher/
 │   └── websocket/         # WebSocket 功能
 │       ├── client.go
 │       └── hub.go
-├── main.go                # 主程序入口
-├── go.mod                 # Go 模块文件
-├── go.sum                 # 依赖校验文件
-└── index.html             # 前端页面
+├── .github/workflows/     # GitHub Actions
+│   ├── test.yml          # 测试工作流
+│   ├── release.yml       # 发布工作流
+│   └── status.yml        # 状态工作流
+├── main.go               # Vercel入口 (package handler)
+├── vercel.json           # Vercel配置
+├── go.mod                # Go 模块文件
+├── go.sum                # 依赖校验文件
+├── index.html            # 前端页面
+├── start.bat             # Windows启动脚本
+├── start.sh              # Linux/macOS启动脚本
+└── README.md             # 项目说明
 ```
 
 ## API 接口

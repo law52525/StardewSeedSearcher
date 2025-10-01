@@ -60,10 +60,10 @@ jobs:
       run: go mod download
     
     - name: Build for Linux
-      run: go build -o stardew-seed-searcher-linux .
+      run: go build -o stardew-seed-searcher-linux ./cmd
     
     - name: Build for Windows
-      run: GOOS=windows GOARCH=amd64 go build -o stardew-seed-searcher-windows.exe .
+      run: GOOS=windows GOARCH=amd64 go build -o stardew-seed-searcher-windows.exe ./cmd
     
     - name: Build for macOS
-      run: GOOS=darwin GOARCH=amd64 go build -o stardew-seed-searcher-macos .
+      run: GOOS=darwin GOARCH=amd64 go build -o stardew-seed-searcher-macos ./cmd

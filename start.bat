@@ -9,9 +9,9 @@ echo ╚════════════════════════
 echo.
 
 :: 检查是否存在必要文件
-if not exist "StardewSeedSearcher.exe" (
-    echo [错误] 找不到 StardewSeedSearcher.exe
-    echo 请确保所有文件都在同一目录下！
+if not exist "stardew-seed-searcher.exe" (
+    echo [错误] 找不到 stardew-seed-searcher.exe
+    echo 请先运行: go build -o stardew-seed-searcher.exe ./cmd
     pause
     exit /b 1
 )
@@ -25,7 +25,7 @@ if not exist "index.html" (
 
 :: 启动后端服务（隐藏窗口）
 echo [1/2] 启动后端服务...
-start /min "" StardewSeedSearcher.exe
+start /min "" stardew-seed-searcher.exe
 
 :: 等待服务启动
 echo [2/2] 等待服务启动 (2秒)...

@@ -32,16 +32,16 @@ jobs:
     - name: Build for multiple platforms
       run: |
         # Linux
-        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
-        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher ./cmd
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher ./cmd
         
         # Windows
-        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
-        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe ./cmd
+        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe ./cmd
         
         # macOS
-        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
-        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher ./cmd
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher ./cmd
     
     - name: Create platform-specific packages
       run: |

@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"log"
@@ -31,28 +31,4 @@ func init() {
 // Handler 是Vercel的入口点
 func Handler(w http.ResponseWriter, r *http.Request) {
 	srv.ServeHTTP(w, r)
-}
-
-func main() {
-	// 获取端口，Vercel会设置PORT环境变量
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "5000" // 默认端口
-	}
-
-	log.Println("╔════════════════════════════════════════╗")
-	log.Println("║  🌾 星露谷种子搜索器 - Web 服务启动  ║")
-	log.Println("╚════════════════════════════════════════╝")
-	log.Println()
-	log.Printf("✓ 服务器地址: http://localhost:%s", port)
-	log.Printf("✓ WebSocket: ws://localhost:%s/ws", port)
-	log.Println()
-	log.Println("📝 请打开 index.html 开始使用")
-	log.Println("⚠️  按 Ctrl+C 停止服务器")
-	log.Println()
-
-	// 启动服务器
-	if err := srv.Start(":" + port); err != nil {
-		log.Fatal("服务器启动失败:", err)
-	}
 }
