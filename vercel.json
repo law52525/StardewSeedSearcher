@@ -3,7 +3,16 @@
   "builds": [
     {
       "src": "api/index.go",
-      "use": "@vercel/go"
+      "use": "@vercel/go",
+      "config": {
+        "buildCommand": "go build -o main api/index.go",
+        "outputDirectory": ".",
+        "includeFiles": [
+          "internal/**/*",
+          "go.mod",
+          "go.sum"
+        ]
+      }
     }
   ],
   "routes": [
@@ -19,5 +28,10 @@
       "src": "/(.*)",
       "dest": "/$1"
     }
-  ]
+  ],
+  "functions": {
+    "api/index.go": {
+      "maxDuration": 60
+    }
+  }
 }
