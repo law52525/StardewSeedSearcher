@@ -1,6 +1,3 @@
 DevNotes.md
-**/bin/
-**/obj/
-**/publish/
-start.bat
-用户使用说明.txt
+*.exe
+*.log

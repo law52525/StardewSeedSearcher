@@ -1,0 +1,17 @@
+name: Status Badge
+
+on:
+  workflow_run:
+    workflows: ["Go Tests"]
+    types:
+      - completed
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+    - name: Update README with status
+      run: |
+        echo "Tests completed with status: ${{ github.event.workflow_run.conclusion }}"

@@ -1,0 +1,150 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+    
+    - name: Download dependencies
+      run: go mod download
+    
+    - name: Build for multiple platforms
+      run: |
+        # Linux
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        
+        # Windows
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
+        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
+        
+        # macOS
+        GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+    
+    - name: Create platform-specific packages
+      run: |
+        # 创建Linux包
+        mkdir -p linux-amd64 linux-arm64
+        cp stardew-seed-searcher linux-amd64/stardew-seed-searcher
+        cp stardew-seed-searcher linux-arm64/stardew-seed-searcher
+        cp README.md start.sh index.html linux-amd64/
+        cp README.md start.sh index.html linux-arm64/
+        chmod +x linux-amd64/stardew-seed-searcher linux-amd64/start.sh
+        chmod +x linux-arm64/stardew-seed-searcher linux-arm64/start.sh
+        tar -czf stardew-seed-searcher-linux-amd64.tar.gz -C linux-amd64 .
+        tar -czf stardew-seed-searcher-linux-arm64.tar.gz -C linux-arm64 .
+        
+        # 创建macOS包
+        mkdir -p darwin-amd64 darwin-arm64
+        cp stardew-seed-searcher darwin-amd64/stardew-seed-searcher
+        cp stardew-seed-searcher darwin-arm64/stardew-seed-searcher
+        cp README.md start.sh index.html darwin-amd64/
+        cp README.md start.sh index.html darwin-arm64/
+        chmod +x darwin-amd64/stardew-seed-searcher darwin-amd64/start.sh
+        chmod +x darwin-arm64/stardew-seed-searcher darwin-arm64/start.sh
+        tar -czf stardew-seed-searcher-darwin-amd64.tar.gz -C darwin-amd64 .
+        tar -czf stardew-seed-searcher-darwin-arm64.tar.gz -C darwin-arm64 .
+        
+        # 创建Windows包
+        mkdir -p windows-amd64 windows-arm64
+        cp stardew-seed-searcher.exe windows-amd64/stardew-seed-searcher.exe
+        cp stardew-seed-searcher.exe windows-arm64/stardew-seed-searcher.exe
+        cp README.md start.bat index.html windows-amd64/
+        cp README.md start.bat index.html windows-arm64/
+        zip -r stardew-seed-searcher-windows-amd64.zip windows-amd64/
+        zip -r stardew-seed-searcher-windows-arm64.zip windows-arm64/
+    
+    - name: Create checksums
+      run: |
+        sha256sum stardew-seed-searcher*.tar.gz stardew-seed-searcher*.zip > checksums.txt
+        cat checksums.txt
+    
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          stardew-seed-searcher-linux-amd64.tar.gz
+          stardew-seed-searcher-linux-arm64.tar.gz
+          stardew-seed-searcher-darwin-amd64.tar.gz
+          stardew-seed-searcher-darwin-arm64.tar.gz
+          stardew-seed-searcher-windows-amd64.zip
+          stardew-seed-searcher-windows-arm64.zip
+          checksums.txt
+        body: |
+          # 使用说明
+          
+          ## 快速开始
+          
+          ### Windows
+          1. 解压下载的zip文件
+          2. 双击 `start.bat` 启动程序
+          3. 浏览器会自动打开搜索界面
+          
+          ### Linux/macOS
+          1. 解压下载的tar.gz文件
+          2. 运行启动脚本：
+             ```bash
+             chmod +x start.sh
+             ./start.sh
+             ```
+          3. 浏览器会自动打开搜索界面
+          
+          ## 文件说明
+          
+          - `stardew-seed-searcher` / `stardew-seed-searcher.exe` - 主程序
+          - `start.sh` / `start.bat` - 启动脚本
+          - `index.html` - 网页界面
+          - `README.md` - 详细说明文档
+          - `stardew-seed-searcher.log` - 程序日志（运行后生成）
+          
+          ## 停止程序
+          
+          ### Windows
+          关闭命令行窗口或按 Ctrl+C
+          
+          ### Linux/macOS
+          ```bash
+          # 查看进程
+          ps aux | grep stardew-seed-searcher
+          
+          # 停止程序
+          pkill -f stardew-seed-searcher
+          ```
+          
+          ## 故障排除
+          
+          1. **端口被占用**: 程序使用5000端口，确保端口未被占用
+          2. **权限问题**: Linux/macOS需要给脚本添加执行权限
+          3. **浏览器无法打开**: 手动打开 `index.html` 文件
+          4. **查看日志**: 检查 `stardew-seed-searcher.log` 文件
+          
+          ## 更多信息
+          
+          详细使用说明请查看 `README.md` 文件。
+        generate_release_notes: false
+        draft: false
+        prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

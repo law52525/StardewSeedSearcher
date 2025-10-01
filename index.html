@@ -809,7 +809,7 @@
             switch (data.type) {
                 case 'start':
                     foundSeeds = [];
-                    elements.seedList.innerHTML = '';
+                    renderSeedList(); // 使用统一的渲染函数
                     elements.resultsSection.style.display = 'block';
                     break;
 
@@ -824,14 +824,12 @@
 
                 case 'found':
                     foundSeeds.push(data.seed);
+                    // 对种子列表进行正序排序
+                    foundSeeds.sort((a, b) => a - b);
                     elements.foundCount.textContent = foundSeeds.length;
                     
-                    if (foundSeeds.length <= 20) {
-                        const seedItem = document.createElement('div');
-                        seedItem.className = 'seed-item';
-                        seedItem.textContent = `种子: ${data.seed}`;
-                        elements.seedList.appendChild(seedItem);
-                    }
+                    // 重新渲染种子列表（保持排序）
+                    renderSeedList();
                     
                     updateResultsSummary();
                     break;
@@ -850,6 +848,26 @@
             const total = foundSeeds.length;
             const shown = Math.min(total, 20);
             elements.resultsSummary.textContent = `共找到 ${total} 个 (显示前 ${shown} 个)`;
+        }
+
+        // 渲染种子列表（保持排序）
+        function renderSeedList() {
+            elements.seedList.innerHTML = '';
+            
+            if (foundSeeds.length === 0) {
+                elements.seedList.innerHTML = '<div class="empty-state">暂无结果</div>';
+                return;
+            }
+            
+            // 只显示前20个种子
+            const seedsToShow = foundSeeds.slice(0, 20);
+            
+            seedsToShow.forEach(seed => {
+                const seedItem = document.createElement('div');
+                seedItem.className = 'seed-item';
+                seedItem.textContent = `种子: ${seed}`;
+                elements.seedList.appendChild(seedItem);
+            });
         }
 
         elements.form.addEventListener('submit', async (e) => {
