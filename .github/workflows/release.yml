@@ -92,6 +92,9 @@ jobs:
           stardew-seed-searcher-windows-amd64.zip
           stardew-seed-searcher-windows-arm64.zip
           checksums.txt
+        generate_release_notes: false
+        draft: false
+        prerelease: false
         body: |
           # 使用说明
           
@@ -143,8 +146,5 @@ jobs:
           ## 更多信息
           
           详细使用说明请查看 `README.md` 文件。
-        generate_release_notes: false
-        draft: false
-        prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
