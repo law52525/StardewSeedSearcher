@@ -10,8 +10,7 @@
         "includeFiles": [
           "pkg/**/*",
           "go.mod",
-          "go.sum",
-          "index.html"
+          "go.sum"
         ]
       }
     }
@@ -19,19 +18,20 @@
   "routes": [
     {
       "src": "/ws",
-      "dest": "/ws"
+      "dest": "/api/index.go"
     },
     {
       "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
-        "src": "/", 
-        "dest": "index.html"
+      "dest": "/api/index.go"
     },
     {
       "src": "/(.*)",
-      "dest": "/$1"
+      "dest": "/api/index.go"
     }
-  ]
+  ],
+  "functions": {
+    "api/index.go": {
+      "maxDuration": 10
+    }
+  }
 }
