@@ -17,10 +17,18 @@
       }
     }
   ],
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/api/index.go"
+      "src": "/api/(.*)",
+      "dest": "/api/index.go"
+    },
+    {
+      "src": "/ws",
+      "dest": "/api/index.go"
+    },
+    {
+      "src": "/",
+      "dest": "/api/index.go"
     }
   ]
 }
