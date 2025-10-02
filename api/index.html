@@ -781,7 +781,12 @@
             elements.connectionStatus.textContent = '连接中...';
             elements.connectionStatus.className = 'connection-status connecting';
 
-            ws = new WebSocket('ws://localhost:5000/ws');
+            // 根据环境自动选择 WebSocket URL
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = window.location.hostname === 'localhost' 
+                ? 'ws://localhost:5000/ws'
+                : `${protocol}//${window.location.host}/ws`;
+            ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
                 elements.connectionStatus.textContent = '✓ 已连接';
@@ -943,7 +948,11 @@
                     minRainDays: c.minRain
                 })) : [];
 
-                const response = await fetch('http://localhost:5000/api/search', {
+                // 根据环境自动选择 API URL
+                const apiUrl = window.location.hostname === 'localhost' 
+                    ? 'http://localhost:5000/api/search'
+                    : '/api/search';
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
