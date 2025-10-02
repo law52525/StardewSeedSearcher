@@ -23,10 +23,12 @@
     {
       "src": "/api/(.*)",
       "dest": "/api/index.go"
-    },
+    }
+  ],
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/api/index.go"
+      "source": "/(.*)",
+      "destination": "/api/index.go"
     }
   ]
 }
