@@ -18,7 +18,7 @@ func init() {
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// 如果是根路径，提供 index.html
 	if r.URL.Path == "/" {
-		http.ServeFile(w, r, path.Join("public", "index.html"))
+		http.ServeFile(w, r, path.Join(".", "index.html"))
 		return
 	}
 

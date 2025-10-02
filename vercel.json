@@ -10,7 +10,8 @@
         "includeFiles": [
           "pkg/**/*",
           "go.mod",
-          "go.sum"
+          "go.sum",
+          "index.html"
         ]
       }
     }
