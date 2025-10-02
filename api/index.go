@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"stardew-seed-searcher/pkg/server"
 )
 
@@ -38,8 +39,14 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 		for _, path := range possiblePaths {
 			log.Printf("尝试路径: %s", path)
-			http.ServeFile(w, r, path)
-			return
+			// 检查文件是否存在
+			if _, err := os.Stat(path); err == nil {
+				log.Printf("找到文件: %s", path)
+				http.ServeFile(w, r, path)
+				return
+			} else {
+				log.Printf("文件不存在: %s, 错误: %v", path, err)
+			}
 		}
 
 		// 如果都找不到，返回一个简单的 HTML 页面
