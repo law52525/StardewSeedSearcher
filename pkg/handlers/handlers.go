@@ -357,15 +357,22 @@ func (h *SearchHandler) addMessageToQueue(message map[string]interface{}) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 
-	// 添加时间戳
-	message["timestamp"] = time.Now().Unix()
-	h.messageQueue = append(h.messageQueue, message)
+	// 创建消息副本并添加时间戳
+	messageCopy := make(map[string]interface{})
+	for k, v := range message {
+		messageCopy[k] = v
+	}
+	messageCopy["timestamp"] = time.Now().Unix()
+
+	h.messageQueue = append(h.messageQueue, messageCopy)
 	h.lastMessageTime = time.Now().Unix()
 
 	// 限制队列大小，避免内存泄漏
 	if len(h.messageQueue) > 100 {
 		h.messageQueue = h.messageQueue[1:]
 	}
+
+	log.Printf("添加消息到队列: %+v, 队列大小: %d", messageCopy, len(h.messageQueue))
 }
 
 // getMessagesSince 获取指定时间之后的消息
@@ -373,12 +380,21 @@ func (h *SearchHandler) getMessagesSince(since int64) []map[string]interface{} {
 	h.mu.RLock()
 	defer h.mu.RUnlock()
 
+	log.Printf("获取消息: since=%d, 队列大小=%d", since, len(h.messageQueue))
+
 	var messages []map[string]interface{}
-	for _, msg := range h.messageQueue {
-		if msgTimestamp, ok := msg["timestamp"].(int64); ok && msgTimestamp > since {
-			messages = append(messages, msg)
+	for i, msg := range h.messageQueue {
+		if msgTimestamp, ok := msg["timestamp"].(int64); ok {
+			log.Printf("消息 %d: timestamp=%d, since=%d, 比较结果=%v", i, msgTimestamp, since, msgTimestamp > since)
+			if msgTimestamp > since {
+				messages = append(messages, msg)
+			}
+		} else {
+			log.Printf("消息 %d: 时间戳类型错误: %T", i, msg["timestamp"])
 		}
 	}
+
+	log.Printf("返回 %d 条消息", len(messages))
 	return messages
 }
 
@@ -395,6 +411,17 @@ func (h *SearchHandler) HandleStatus(w http.ResponseWriter, r *http.Request) {
 
 	// 获取新消息
 	messages := h.getMessagesSince(since)
+
+	// 如果没有消息且是第一次请求，返回一个心跳消息
+	if len(messages) == 0 && since == 0 {
+		messages = []map[string]interface{}{
+			{
+				"type":      "heartbeat",
+				"timestamp": time.Now().Unix(),
+				"message":   "轮询连接正常",
+			},
+		}
+	}
 
 	// 返回当前时间戳和消息
 	response := map[string]interface{}{

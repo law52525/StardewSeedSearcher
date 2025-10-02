@@ -829,18 +829,33 @@
             pollingInterval = setInterval(async () => {
                 try {
                     const sinceParam = lastUpdateTime > 0 ? `?since=${lastUpdateTime}` : '';
+                    console.log(`轮询请求: /api/status${sinceParam}, lastUpdateTime: ${lastUpdateTime}`);
+                    
                     const response = await fetch(`/api/status${sinceParam}`);
                     if (response.ok) {
                         const data = await response.json();
+                        console.log('轮询响应:', data);
+                        
                         if (data.timestamp > lastUpdateTime) {
                             lastUpdateTime = data.timestamp;
                             
                             // 处理所有新消息
                             if (data.messages && data.messages.length > 0) {
+                                console.log(`处理 ${data.messages.length} 条新消息`);
                                 data.messages.forEach(message => {
-                                    handleWebSocketMessage(message);
+                                    console.log('处理消息:', message);
+                                    // 跳过心跳消息的UI处理
+                                    if (message.type !== 'heartbeat') {
+                                        handleWebSocketMessage(message);
+                                    } else {
+                                        console.log('收到心跳消息:', message.message);
+                                    }
                                 });
+                            } else {
+                                console.log('没有新消息');
                             }
+                        } else {
+                            console.log('时间戳没有更新');
                         }
                     }
                 } catch (error) {
