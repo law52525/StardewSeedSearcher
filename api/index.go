@@ -2,6 +2,8 @@ package handler
 
 import (
 	"fmt"
+	"runtime"
+	"path/filepath"
 	"net/http"
 	"os"
 	"stardew-seed-searcher/pkg/server"
@@ -29,8 +31,19 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 // serveIndexHTML 提供 index.html 文件
 func serveIndexHTML(w http.ResponseWriter, r *http.Request) {
+	// Get the current file's directory
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		http.Error(w, "Failed to get current file path", http.StatusInternalServerError)
+		return
+	}
+	currentDir := filepath.Dir(filename)
+
+	// Construct the path to index.html relative to the project root
+	htmlPath := filepath.Join(currentDir, "..", "public", "index.html")
+
 	// 读取 index.html 文件
-	content, err := os.ReadFile("index.html")
+	content, err := os.ReadFile(htmlPath)
 	if err != nil {
 		// 如果文件不存在，返回一个简单的HTML页面
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
