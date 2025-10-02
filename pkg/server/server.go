@@ -63,6 +63,7 @@ func NewServer() *Server {
 	searchHandler := handlers.NewSearchHandler(hub)
 	mux.HandleFunc("/api/search", searchHandler.HandleSearch)
 	mux.HandleFunc("/api/health", handlers.HandleHealth)
+	mux.HandleFunc("/api/status", searchHandler.HandleStatus)
 
 	// 根端点 - 提供 HTML 页面
 	mux.HandleFunc("/", handlers.HandleRoot)

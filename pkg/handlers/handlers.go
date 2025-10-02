@@ -10,6 +10,7 @@ import (
 	"stardew-seed-searcher/pkg/features"
 	"stardew-seed-searcher/pkg/models"
 	"stardew-seed-searcher/pkg/websocket"
+	"strconv"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -26,11 +27,19 @@ func min(a, b int) int {
 // SearchHandler 处理搜索请求
 type SearchHandler struct {
 	hub *websocket.Hub
+	// 用于轮询的消息队列
+	messageQueue    []map[string]interface{}
+	lastMessageTime int64
+	mu              sync.RWMutex
 }
 
 // NewSearchHandler 创建新的 SearchHandler
 func NewSearchHandler(hub *websocket.Hub) *SearchHandler {
-	return &SearchHandler{hub: hub}
+	return &SearchHandler{
+		hub:             hub,
+		messageQueue:    make([]map[string]interface{}, 0),
+		lastMessageTime: 0,
+	}
 }
 
 // HandleSearch 处理搜索 API 端点
@@ -96,6 +105,11 @@ func (h *SearchHandler) performSearch(request models.SearchRequest) {
 	}
 	if data, err := json.Marshal(startMessage); err == nil {
 		h.hub.Broadcast(data)
+		// 同时添加到消息队列（用于轮询）
+		h.addMessageToQueue(map[string]interface{}{
+			"type":  "start",
+			"total": totalSeeds,
+		})
 	}
 
 	// 并行搜索配置 - 基于实际CPU核心数动态调整
@@ -210,6 +224,11 @@ func (h *SearchHandler) performSearch(request models.SearchRequest) {
 						}
 						if data, err := json.Marshal(foundMessage); err == nil {
 							h.hub.Broadcast(data)
+							// 同时添加到消息队列（用于轮询）
+							h.addMessageToQueue(map[string]interface{}{
+								"type": "found",
+								"seed": int(seed),
+							})
 						}
 
 						// 检查是否达到输出限制
@@ -271,6 +290,12 @@ func (h *SearchHandler) performSearch(request models.SearchRequest) {
 	if data, err := json.Marshal(completeMessage); err == nil {
 		log.Printf("发送完成消息: %s", string(data))
 		h.hub.Broadcast(data)
+		// 同时添加到消息队列（用于轮询）
+		h.addMessageToQueue(map[string]interface{}{
+			"type":       "complete",
+			"totalFound": len(results),
+			"elapsed":    elapsed,
+		})
 		log.Printf("完成消息已发送")
 	} else {
 		log.Printf("完成消息序列化失败: %v", err)
@@ -302,6 +327,15 @@ func (h *SearchHandler) updateProgress(checkedCount, totalSeeds int64, startTime
 	}
 	if data, err := json.Marshal(progressMessage); err == nil {
 		h.hub.Broadcast(data)
+		// 同时添加到消息队列（用于轮询）
+		h.addMessageToQueue(map[string]interface{}{
+			"type":         "progress",
+			"checkedCount": int(checkedCount),
+			"total":        int(totalSeeds),
+			"progress":     progress,
+			"speed":        speed,
+			"elapsed":      elapsed,
+		})
 	} else {
 		log.Printf("进度消息序列化失败: %v", err)
 	}
@@ -312,6 +346,62 @@ func HandleHealth(w http.ResponseWriter, r *http.Request) {
 	response := models.HealthResponse{
 		Status:  "ok",
 		Version: "1.0",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+// addMessageToQueue 添加消息到队列（用于轮询）
+func (h *SearchHandler) addMessageToQueue(message map[string]interface{}) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+
+	// 添加时间戳
+	message["timestamp"] = time.Now().Unix()
+	h.messageQueue = append(h.messageQueue, message)
+	h.lastMessageTime = time.Now().Unix()
+
+	// 限制队列大小，避免内存泄漏
+	if len(h.messageQueue) > 100 {
+		h.messageQueue = h.messageQueue[1:]
+	}
+}
+
+// getMessagesSince 获取指定时间之后的消息
+func (h *SearchHandler) getMessagesSince(since int64) []map[string]interface{} {
+	h.mu.RLock()
+	defer h.mu.RUnlock()
+
+	var messages []map[string]interface{}
+	for _, msg := range h.messageQueue {
+		if msgTimestamp, ok := msg["timestamp"].(int64); ok && msgTimestamp > since {
+			messages = append(messages, msg)
+		}
+	}
+	return messages
+}
+
+// HandleStatus 处理状态轮询端点（用于 Vercel 环境）
+func (h *SearchHandler) HandleStatus(w http.ResponseWriter, r *http.Request) {
+	// 获取查询参数中的 since 时间戳
+	sinceStr := r.URL.Query().Get("since")
+	var since int64 = 0
+	if sinceStr != "" {
+		if parsed, err := strconv.ParseInt(sinceStr, 10, 64); err == nil {
+			since = parsed
+		}
+	}
+
+	// 获取新消息
+	messages := h.getMessagesSince(since)
+
+	// 返回当前时间戳和消息
+	response := map[string]interface{}{
+		"timestamp": time.Now().Unix(),
+		"status":    "ok",
+		"messages":  messages,
+		"count":     len(messages),
 	}
 
 	w.Header().Set("Content-Type", "application/json")

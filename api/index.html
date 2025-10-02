@@ -781,7 +781,14 @@
             elements.connectionStatus.textContent = '连接中...';
             elements.connectionStatus.className = 'connection-status connecting';
 
-            // 根据环境自动选择 WebSocket URL
+            // 检查是否在 Vercel 环境（非 localhost）
+            if (window.location.hostname !== 'localhost') {
+                // Vercel 环境：使用轮询替代 WebSocket
+                startPolling();
+                return;
+            }
+
+            // 本地环境：使用 WebSocket
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = window.location.hostname === 'localhost' 
                 ? 'ws://localhost:5000/ws'
@@ -789,7 +796,7 @@
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                elements.connectionStatus.textContent = '✓ 已连接';
+                elements.connectionStatus.textContent = '✓ 已连接 (WebSocket)';
                 elements.connectionStatus.className = 'connection-status connected';
             };
 
@@ -808,6 +815,47 @@
                 elements.connectionStatus.className = 'connection-status disconnected';
                 setTimeout(connectWebSocket, 5000);
             };
+        }
+
+        // 轮询替代方案（用于 Vercel 环境）
+        let pollingInterval = null;
+        let lastUpdateTime = 0;
+
+        function startPolling() {
+            elements.connectionStatus.textContent = '✓ 已连接 (轮询)';
+            elements.connectionStatus.className = 'connection-status connected';
+            
+            // 每2秒轮询一次状态
+            pollingInterval = setInterval(async () => {
+                try {
+                    const sinceParam = lastUpdateTime > 0 ? `?since=${lastUpdateTime}` : '';
+                    const response = await fetch(`/api/status${sinceParam}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.timestamp > lastUpdateTime) {
+                            lastUpdateTime = data.timestamp;
+                            
+                            // 处理所有新消息
+                            if (data.messages && data.messages.length > 0) {
+                                data.messages.forEach(message => {
+                                    handleWebSocketMessage(message);
+                                });
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('轮询错误:', error);
+                    elements.connectionStatus.textContent = '✗ 轮询错误';
+                    elements.connectionStatus.className = 'connection-status error';
+                }
+            }, 2000);
+        }
+
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
         }
 
         function handleWebSocketMessage(data) {
