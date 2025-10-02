@@ -43,15 +43,28 @@ func TestWeatherPredictor_PredictWeather(t *testing.T) {
 		}
 	}
 
-	// 检查春季第 3 天（根据规则应该是雨天）
+	// 检查春季前10天的固定天气规则
+	// 第1、2、4、5天应该是晴天
+	if weather[1] {
+		t.Error("春季第 1 天应该是晴天")
+	}
+	if weather[2] {
+		t.Error("春季第 2 天应该是晴天")
+	}
+	if weather[4] {
+		t.Error("春季第 4 天应该是晴天")
+	}
+	if weather[5] {
+		t.Error("春季第 5 天应该是晴天")
+	}
+
+	// 第3天应该是雨天
 	if !weather[3] {
 		t.Error("春季第 3 天应该是雨天")
 	}
 
-	// 检查春季第 1 天（根据规则应该是晴天）
-	if weather[1] {
-		t.Error("春季第 1 天应该是晴天")
-	}
+	// 第6-10天使用通用逻辑，这里只检查它们不是固定晴天
+	// 具体是否下雨取决于随机数，所以不强制检查
 }
 
 func TestWeatherPredictor_PredictSpringRain(t *testing.T) {

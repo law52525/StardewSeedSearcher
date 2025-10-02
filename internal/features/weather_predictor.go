@@ -121,9 +121,9 @@ func (wp *WeatherPredictor) PredictWeather(gameID int, useLegacyRandom bool) map
 func (wp *WeatherPredictor) isRainyDay(season, dayOfMonth, absoluteDay, gameID int, useLegacyRandom bool) bool {
 	// 固定天气规则
 
-	// 春季 (season 0)
-	if season == 0 {
-		if dayOfMonth == 1 || dayOfMonth == 2 || dayOfMonth == 4 {
+	switch season {
+	case 0: // 春季
+		if dayOfMonth == 1 || dayOfMonth == 2 || dayOfMonth == 4 || dayOfMonth == 5 {
 			return false // 晴天
 		}
 		if dayOfMonth == 3 {
@@ -133,8 +133,7 @@ func (wp *WeatherPredictor) isRainyDay(season, dayOfMonth, absoluteDay, gameID i
 			return false // 节日固定晴天
 		}
 		// 春季没有return，会继续执行后面的通用逻辑
-	} else if season == 1 {
-		// 夏季 (season 1)
+	case 1: // 夏季
 		// 夏季特殊：绿雨日确定
 		year := 1 // 第一年
 		greenRainSeed := core.GetRandomSeed(year*777, gameID, 0, 0, 0, useLegacyRandom)
@@ -158,8 +157,7 @@ func (wp *WeatherPredictor) isRainyDay(season, dayOfMonth, absoluteDay, gameID i
 		normalizedSeed := wp.RandomNextDouble(rainSeed)
 		rainChance := 0.12 + 0.003*float64(dayOfMonth-1)
 		return normalizedSeed < rainChance
-	} else if season == 2 {
-		// 秋季 (season 2)
+	case 2: // 秋季
 		if dayOfMonth == 16 || dayOfMonth == 27 {
 			return false // 节日固定晴天
 		}
