@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"path"
 	"net/http"
 	"stardew-seed-searcher/pkg/server"
 )
@@ -18,7 +17,8 @@ func init() {
 func Handler(w http.ResponseWriter, r *http.Request) {
 	// 如果是根路径，提供 index.html
 	if r.URL.Path == "/" {
-		http.ServeFile(w, r, path.Join(".", "index.html"))
+		// 在Vercel环境中，index.html在根目录
+		http.ServeFile(w, r, "index.html")
 		return
 	}
 
