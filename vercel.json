@@ -10,9 +10,7 @@
         "includeFiles": [
           "pkg/**/*",
           "go.mod",
-          "go.sum",
-          "index.html",
-          "public/**/*"
+          "go.sum"
         ]
       }
     }
@@ -28,7 +26,7 @@
     },
     {
       "src": "/",
-      "dest": "/api/index.go"
+      "dest": "/index.html"
     }
   ]
 }
