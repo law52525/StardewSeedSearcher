@@ -11,7 +11,8 @@
           "pkg/**/*",
           "go.mod",
           "go.sum",
-          "index.html"
+          "index.html",
+          "public/**/*"
         ]
       }
     }
