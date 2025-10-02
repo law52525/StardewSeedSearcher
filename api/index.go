@@ -28,6 +28,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		// 设置正确的 Content-Type
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
+		// 调试：显示当前工作目录和文件列表
+		if wd, err := os.Getwd(); err == nil {
+			log.Printf("当前工作目录: %s", wd)
+		}
+
+		// 列出当前目录的所有文件
+		if files, err := os.ReadDir("."); err == nil {
+			log.Printf("当前目录文件列表:")
+			for _, file := range files {
+				log.Printf("  - %s (目录: %v)", file.Name(), file.IsDir())
+			}
+		} else {
+			log.Printf("无法读取当前目录: %v", err)
+		}
+
 		// 尝试不同的路径来找到 index.html
 		possiblePaths := []string{
 			"index.html",
