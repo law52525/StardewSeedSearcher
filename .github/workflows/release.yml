@@ -32,12 +32,12 @@ jobs:
     - name: Build for multiple platforms
       run: |
         # Linux
-        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
-        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher .
+        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher-linux-amd64 .
+        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher-linux-arm64 .
         
         # Windows
-        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
-        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher.exe .
+        GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher-amd64.exe .
+        GOOS=windows GOARCH=arm64 go build -ldflags="-s -w" -o stardew-seed-searcher-arm64.exe .
         
         # macOS
         GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o stardew-seed-searcher .
@@ -47,8 +47,8 @@ jobs:
       run: |
         # 创建Linux包
         mkdir -p linux-amd64 linux-arm64
-        cp stardew-seed-searcher linux-amd64/stardew-seed-searcher
-        cp stardew-seed-searcher linux-arm64/stardew-seed-searcher
+        cp stardew-seed-searcher-linux-amd64 linux-amd64/stardew-seed-searcher
+        cp stardew-seed-searcher-linux-arm64 linux-arm64/stardew-seed-searcher
         cp README.md start.sh index.html linux-amd64/
         cp README.md start.sh index.html linux-arm64/
         chmod +x linux-amd64/stardew-seed-searcher linux-amd64/start.sh
@@ -69,8 +69,8 @@ jobs:
         
         # 创建Windows包
         mkdir -p windows-amd64 windows-arm64
-        cp stardew-seed-searcher.exe windows-amd64/stardew-seed-searcher.exe
-        cp stardew-seed-searcher.exe windows-arm64/stardew-seed-searcher.exe
+        cp stardew-seed-searcher-amd64.exe windows-amd64/stardew-seed-searcher.exe
+        cp stardew-seed-searcher-arm64.exe windows-arm64/stardew-seed-searcher.exe
         cp README.md start.bat index.html windows-amd64/
         cp README.md start.bat index.html windows-arm64/
         zip -r stardew-seed-searcher-windows-amd64.zip windows-amd64/
