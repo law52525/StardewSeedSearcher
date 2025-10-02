@@ -15,16 +15,6 @@
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/ws",
-      "dest": "/api/index.go"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/index.go"
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
