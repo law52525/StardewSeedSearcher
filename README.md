@@ -63,6 +63,23 @@ go build -o stardew-seed-searcher.exe .
 ./stardew-seed-searcher.exe
 ```
 
+### 使用启动脚本
+
+项目提供了便捷的启动脚本：
+
+**Windows:**
+```bash
+# 双击运行或在命令行执行
+start.bat
+```
+
+**Linux/macOS:**
+```bash
+# 添加执行权限并运行
+chmod +x start.sh
+./start.sh
+```
+
 ### 运行测试
 
 ```bash
@@ -72,7 +89,22 @@ go test ./...
 # 运行特定包的测试
 go test ./internal/features
 go test ./internal/core
+go test ./internal/handlers
 ```
+
+### 下载预编译版本
+
+不想自己编译？可以直接下载预编译的可执行文件：
+
+1. 访问 [Releases 页面](https://github.com/law52525/StardewSeedSearcher/releases)
+2. 下载对应操作系统的版本：
+   - Windows: `stardew-seed-searcher.exe`
+   - Linux: `stardew-seed-searcher`
+   - macOS: `stardew-seed-searcher`
+3. 直接运行即可，无需安装 Go 环境
+
+**注意：** 预编译版本已包含所有依赖，开箱即用！
+
 
 ## 项目结构
 
@@ -87,7 +119,9 @@ StardewSeedSearcher/
 │   │   ├── weather_predictor.go
 │   │   └── weather_predictor_test.go
 │   ├── handlers/          # HTTP 处理器
-│   │   └── handlers.go
+│   │   ├── handlers.go
+│   │   ├── handlers_test.go
+│   │   └── parallel_test.go
 │   ├── models/            # 数据模型
 │   │   └── models.go
 │   ├── server/            # Web 服务器
@@ -98,7 +132,10 @@ StardewSeedSearcher/
 ├── main.go                # 主程序入口
 ├── go.mod                 # Go 模块文件
 ├── go.sum                 # 依赖校验文件
-└── index.html             # 前端页面
+├── index.html             # 前端页面
+├── start.bat              # Windows 启动脚本
+├── start.sh               # Linux/macOS 启动脚本
+└── LICENSE                # 许可证文件
 ```
 
 ## API 接口
