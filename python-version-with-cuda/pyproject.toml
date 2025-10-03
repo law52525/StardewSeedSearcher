@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "stardew-seed-searcher"
+version = "1.0.0"
+description = "Stardew Valley Seed Searcher - Python Version with GPU Acceleration"
+authors = [{name = "Stardew Seed Searcher Team"}]
+readme = "README_Python.md"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi==0.104.1",
+    "uvicorn[standard]==0.24.0",
+    "websockets==12.0",
+    "xxhash==3.4.1",
+    "pydantic==2.5.0",
+    "requests==2.31.0",
+    "numba==0.58.1",
+    "cupy-cuda13x==13.6.0",
+    "numpy==1.24.3",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest==7.4.3",
+    "pytest-asyncio==0.21.1",
+    "pytest-cov==4.1.0",
+    "pytest-html==4.1.1",
+    "pytest-xdist==3.3.1",
+    "pytest-mock==3.12.0",
+    "pytest-timeout==2.2.0",
+    "pytest-benchmark==4.0.0",
+]
+gpu = [
+    "numba==0.58.1",
+    "cupy-cuda13x==13.6.0",
+    "numpy==1.24.3",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--verbose",
+    "--tb=short",
+    "--strict-markers",
+    "--strict-config",
+    "--disable-warnings",
+    "--color=yes",
+    "--durations=10",
+    "--cov=internal",
+    "--cov-report=html",
+    "--cov-report=term-missing",
+    "--cov-report=xml",
+    "--html=reports/pytest_report.html",
+    "--self-contained-html",
+]
+markers = [
+    "unit: Unit tests that don't require external dependencies",
+    "integration: Integration tests that require server running",
+    "slow: Slow running tests",
+    "api: API endpoint tests",
+    "weather: Weather predictor tests",
+    "validation: Data validation tests",
+    "websocket: WebSocket message tests",
+    "consistency: Consistency tests with Go version",
+    "benchmark: Performance benchmark tests",
+    "gpu: GPU acceleration tests (requires CUDA)",
+]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(name)s: %(message)s"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+timeout = 300
+
+[tool.coverage.run]
+source = ["internal"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/env/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "reports/coverage_html"
+
+[tool.benchmark]
+min_rounds = 5
+max_time = 1.0
+warmup = true
+warmup_iterations = 1

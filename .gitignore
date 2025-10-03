@@ -1,3 +1,14 @@
 DevNotes.md
 *.exe
 *.log
+venv/
+__pycache__/
+.pytest_cache/
+.benchmarks/
+reports/
+.vscode/
+.idea/
+.DS_Store
+.env
+.coverage
+coverage.xml
