@@ -1,0 +1,21 @@
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+websockets==12.0
+xxhash==3.4.1
+pydantic==2.5.0
+requests==2.31.0
+
+# GPU acceleration dependencies (CUDA 13.x required)
+numba==0.58.1
+cupy-cuda13x==13.6.0
+numpy==1.24.3
+
+# Testing dependencies (pytest framework)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+pytest-html==4.1.1
+pytest-xdist==3.3.1
+pytest-mock==3.12.0
+pytest-timeout==2.2.0
+pytest-benchmark==4.0.0
