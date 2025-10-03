@@ -1,6 +1,6 @@
 # StardewSeedSearcher - Python Version
 
-[![Python Version](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org/)
+[![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 星露谷物语种子搜索器 - Python版本 (从Go版本转换而来)
@@ -23,6 +23,43 @@
 - **GPU加速**：CUDA + CuPy + Numba
 - **并行计算**：纯GPU天气预测算法
 
+## 性能基准测试
+
+### 实际测试结果
+
+基于真实服务运行的速度对比测试，结果非常令人印象深刻：
+
+| 搜索范围 | Go CPU时间 | Python GPU时间 | 加速比 | 性能提升 |
+|---------|-----------|---------------|--------|----------|
+| 100K    | 1.255s    | 1.133s        | **1.11x** | 🐌 |
+| 500K    | 2.348s    | 1.011s        | **2.32x** | 🏃 |
+| 1M      | 3.630s    | 1.020s        | **3.56x** | 🏃 |
+| 5M      | 14.355s   | 1.007s        | **14.25x** | ⚡ |
+| 10M     | 33.010s   | 1.029s        | **32.09x** | 🚀 |
+| 50M     | 150.176s  | 1.030s        | **145.75x** | 🚀 |
+| 100M    | 289.668s  | 1.094s        | **264.78x** | 🚀 |
+| 2.1B    | 7730.941s | 1.881s        | **4109.73x** | 🚀 |
+
+### 性能分析
+
+**关键发现**：
+- **小范围搜索** (100K-1M): 1-4x 加速
+- **中范围搜索** (5M-10M): 14-32x 加速  
+- **大范围搜索** (50M+): 145x+ 加速
+- **超大范围搜索** (100M+): 264x+ 加速
+- **极限范围搜索** (2.1B): 4109x+ 加速
+
+**性能特点**：
+- **Go CPU**: 时间随范围线性增长
+- **Python GPU**: 时间基本稳定在1秒左右
+- **加速比**: 随范围增大而显著提升
+
+**最惊人的结果**：
+- 50M范围搜索：Go需要150秒，Python GPU只需要1秒！加速比**145.75倍**！
+- 100M范围搜索：Go需要289秒，Python GPU只需要1秒！加速比**264.78倍**！
+- **2.1B范围搜索：Go需要7731秒(2.15小时)，Python GPU只需要1.9秒！加速比4109.73倍**！
+- 随着搜索范围增大，GPU优势呈指数级增长！
+
 ## 快速开始
 
 ### 环境要求
@@ -34,10 +71,25 @@
 
 ### 运行步骤
 
+0. **准备CUDA环境**
+```bash
+# 检查CUDA版本 (需要13.0+)
+nvidia-smi
+
+# 安装CUDA Toolkit (如果未安装)
+# 下载地址: https://developer.nvidia.com/cuda-downloads
+# 检查CUDA Toolkit
+nvcc --version
+
+# 创建conda环境 (推荐)
+conda create -n stardewseedsearcher python=3.9
+conda activate stardewseedsearcher
+```
+
 1. 克隆项目
 ```bash
 git clone https://github.com/law52525/StardewSeedSearcher.git
-cd StardewSeedSearcher
+cd StardewSeedSearcher/python-version-with-cuda
 ```
 
 2. 安装依赖
@@ -58,23 +110,6 @@ python main.py
 - 设置种子范围
 - 配置天气条件
 - 点击"开始搜索"
-
-### 使用启动脚本
-
-项目提供了便捷的启动脚本：
-
-**Windows:**
-```bash
-# 双击运行或在命令行执行
-start.bat
-```
-
-**Linux/macOS:**
-```bash
-# 添加执行权限并运行
-chmod +x start.sh
-./start.sh
-```
 
 ### 运行测试
 
@@ -105,12 +140,13 @@ python run_pytest.py fast
 ### 测试报告
 
 - **HTML报告**：`reports/pytest_report.html`
-- **覆盖率报告**：`htmlcov/index.html`
+- **覆盖率报告**：`reports/coverage_html/index.html`
+- **XML报告**：`coverage.xml`
 
 ## 项目结构
 
 ```
-StardewSeedSearcher/
+python-version-with-cuda/
 ├── internal/                  # 核心代码
 │   ├── __init__.py
 │   ├── models.py              # 数据模型
@@ -124,20 +160,28 @@ StardewSeedSearcher/
 │   ├── README.md              # 测试文档
 │   ├── QUICK_START.md         # 快速开始
 │   ├── EXAMPLES.md            # 测试示例
+│   ├── INDEX.md               # 测试索引
 │   ├── conftest.py            # pytest配置
-│   ├── test_*.py              # 各种测试文件
+│   ├── test_api_endpoints.py  # API端点测试
+│   ├── test_benchmark.py      # 性能基准测试
+│   ├── test_consistency.py    # 一致性测试
+│   ├── test_data_validation.py # 数据验证测试
+│   ├── test_gpu_acceleration.py # GPU加速测试
+│   ├── test_weather_predictor.py # 天气预测测试
+│   ├── test_websocket_messages.py # WebSocket消息测试
 │   └── __init__.py
 ├── reports/                   # 测试报告
-│   └── pytest_report.html     # HTML测试报告
+│   ├── coverage_html/         # HTML覆盖率报告
+│   │   ├── index.html         # 覆盖率主页
+│   │   └── *.html             # 各文件覆盖率详情
+│   └── pytest_report.html     # pytest HTML报告
 ├── main.py                    # 主程序入口
 ├── run_pytest.py              # 测试运行器
 ├── pytest.ini                # pytest配置
 ├── pyproject.toml             # 项目配置
 ├── requirements.txt           # Python 依赖文件
-├── index.html                 # 前端页面 (保持不变)
-├── start.bat                  # Windows 启动脚本
-├── start.sh                   # Linux/macOS 启动脚本
-└── README_Python.md           # Python版本说明
+├── GPU_SETUP.md              # GPU设置指南
+└── README.md                 # 项目说明文档
 ```
 
 ## API 接口
