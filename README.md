@@ -1,10 +1,13 @@
 # StardewSeedSearcher
 
 [![Go Tests](https://github.com/law52525/StardewSeedSearcher/workflows/Go%20Tests/badge.svg)](https://github.com/law52525/StardewSeedSearcher/actions)
+[![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://python.org/)
 [![Go Version](https://img.shields.io/badge/Go-1.21+-blue.svg)](https://golang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 星露谷物语种子搜索器 - 脆音音版本 (Go 重构版)
+
+[星露谷物语种子搜索器 - 脆音音版本 (Python GPU急速版)](python-version-with-cuda)
 
 ## 功能特性
 
