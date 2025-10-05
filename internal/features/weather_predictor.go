@@ -120,10 +120,13 @@ func (wp *WeatherPredictor) PredictWeather(gameID int, useLegacyRandom bool) map
 // isRainyDay 判断某一天是否下雨
 func (wp *WeatherPredictor) isRainyDay(season, dayOfMonth, absoluteDay, gameID int, useLegacyRandom bool) bool {
 	// 固定天气规则
+	if dayOfMonth == 1 { // 第一天固定晴天
+		return false // 晴天
+	}
 
 	switch season {
 	case 0: // 春季
-		if dayOfMonth == 1 || dayOfMonth == 2 || dayOfMonth == 4 || dayOfMonth == 5 {
+		if dayOfMonth == 2 || dayOfMonth == 4 || dayOfMonth == 5 {
 			return false // 晴天
 		}
 		if dayOfMonth == 3 {
@@ -235,4 +238,49 @@ func (wp *WeatherPredictor) PredictSpringRain(gameID int, useLegacyRandom bool) 
 	}
 
 	return rainyDays
+}
+
+// GetWeatherDetail 获取详细的天气信息
+func (wp *WeatherPredictor) GetWeatherDetail(gameID int, useLegacyRandom bool) *models.WeatherDetail {
+	weather := wp.PredictWeather(gameID, useLegacyRandom)
+
+	// 初始化各季节的雨天列表
+	springRain := make([]int, 0)
+	summerRain := make([]int, 0)
+	fallRain := make([]int, 0)
+
+	// 获取绿雨日
+	greenRainDay := wp.getGreenRainDay(gameID, useLegacyRandom)
+
+	// 遍历所有天气，按季节分类
+	for absoluteDay := 1; absoluteDay <= 84; absoluteDay++ {
+		if isRainy, exists := weather[absoluteDay]; exists && isRainy {
+			season := (absoluteDay - 1) / 28 // 0=春季, 1=夏季, 2=秋季
+			dayOfMonth := ((absoluteDay - 1) % 28) + 1
+
+			switch season {
+			case 0: // 春季
+				springRain = append(springRain, dayOfMonth)
+			case 1: // 夏季
+				summerRain = append(summerRain, dayOfMonth)
+			case 2: // 秋季
+				fallRain = append(fallRain, dayOfMonth)
+			}
+		}
+	}
+
+	return &models.WeatherDetail{
+		SpringRain:   springRain,
+		SummerRain:   summerRain,
+		FallRain:     fallRain,
+		GreenRainDay: greenRainDay,
+	}
+}
+
+// getGreenRainDay 获取绿雨日
+func (wp *WeatherPredictor) getGreenRainDay(gameID int, useLegacyRandom bool) int {
+	year := 1 // 第一年
+	greenRainSeed := core.GetRandomSeed(year*777, gameID, 0, 0, 0, useLegacyRandom)
+	greenRainDays := []int{5, 6, 7, 14, 15, 16, 18, 23}
+	return greenRainDays[wp.RandomNext(greenRainSeed, len(greenRainDays))]
 }

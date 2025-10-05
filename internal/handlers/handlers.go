@@ -203,11 +203,21 @@ func (h *SearchHandler) performSearch(request models.SearchRequest) {
 
 						log.Printf("工作线程 %d 找到匹配种子: %d", workerID, seed)
 
-						// 立即推送找到的种子
+						// 创建found消息
 						foundMessage := models.FoundMessage{
 							WebSocketMessage: models.WebSocketMessage{Type: "found"},
 							Seed:             int(seed),
 						}
+
+						// 如果有天气预测器，获取天气详情
+						for _, feature := range workerFeatures {
+							if predictor, ok := feature.(*features.WeatherPredictor); ok && predictor.IsEnabled() {
+								weatherDetail := predictor.GetWeatherDetail(int(seed), request.UseLegacyRandom)
+								foundMessage.WeatherDetail = weatherDetail
+								break
+							}
+						}
+
 						if data, err := json.Marshal(foundMessage); err == nil {
 							h.hub.Broadcast(data)
 						}

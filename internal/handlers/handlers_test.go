@@ -84,7 +84,7 @@ func TestSearchConsistency(t *testing.T) {
 				{Season: models.Fall, StartDay: 1, EndDay: 28, MinRainDays: 10},
 			},
 			outputLimit:   20,
-			expectedSeeds: []int{107180, 371222, 403543, 433877, 443151, 567995, 690980},
+			expectedSeeds: []int{443151, 567995},
 		},
 		{
 			name:            "测试样例3: 春夏秋各前10天5个雨天",
@@ -97,7 +97,7 @@ func TestSearchConsistency(t *testing.T) {
 				{Season: models.Fall, StartDay: 1, EndDay: 10, MinRainDays: 5},
 			},
 			outputLimit:   20,
-			expectedSeeds: []int{270393},
+			expectedSeeds: []int{},
 		},
 		{
 			name:            "测试样例4: 0到10万范围，春夏各前10天",
@@ -122,7 +122,7 @@ func TestSearchConsistency(t *testing.T) {
 				{Season: models.Fall, StartDay: 1, EndDay: 15, MinRainDays: 6},
 			},
 			outputLimit:   20,
-			expectedSeeds: []int{100066501, 100077568},
+			expectedSeeds: []int{100077568},
 		},
 		{
 			name:            "测试样例6: 春夏秋各前15天不同雨天要求",
@@ -135,7 +135,7 @@ func TestSearchConsistency(t *testing.T) {
 				{Season: models.Fall, StartDay: 1, EndDay: 15, MinRainDays: 6},
 			},
 			outputLimit:   20,
-			expectedSeeds: []int{4604, 15278, 27396, 34586, 43362, 44159, 50668, 51835, 55234, 55873, 63250, 66882, 69723, 73556, 74213, 76395, 86007, 92201, 100574, 101222},
+			expectedSeeds: []int{15278, 27396, 43362, 50668, 55234, 55873, 69723, 73556, 74213, 76395, 86007, 114536, 116799, 120232, 131095, 134368, 159031, 209947, 212567, 224068},
 		},
 		{
 			name:            "测试样例7: 1亿到1.1亿范围，春夏秋各前15天7个雨天",
@@ -148,7 +148,7 @@ func TestSearchConsistency(t *testing.T) {
 				{Season: models.Fall, StartDay: 1, EndDay: 15, MinRainDays: 7},
 			},
 			outputLimit:   20,
-			expectedSeeds: []int{100728737, 101328491, 102189128, 108581614},
+			expectedSeeds: []int{100728737, 108581614},
 		},
 	}
 

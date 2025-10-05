@@ -124,10 +124,19 @@ type ProgressMessage struct {
 	Elapsed      float64 `json:"elapsed"`
 }
 
+// WeatherDetail 表示天气详情
+type WeatherDetail struct {
+	SpringRain   []int `json:"springRain"`   // 春季雨天日期
+	SummerRain   []int `json:"summerRain"`   // 夏季雨天日期
+	FallRain     []int `json:"fallRain"`     // 秋季雨天日期
+	GreenRainDay int   `json:"greenRainDay"` // 绿雨日
+}
+
 // FoundMessage 表示找到种子消息
 type FoundMessage struct {
 	WebSocketMessage
-	Seed int `json:"seed"`
+	Seed          int            `json:"seed"`
+	WeatherDetail *WeatherDetail `json:"weatherDetail,omitempty"`
 }
 
 // CompleteMessage 表示搜索完成消息
