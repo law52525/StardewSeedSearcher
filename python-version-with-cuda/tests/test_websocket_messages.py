@@ -268,7 +268,14 @@ class TestWebSocketMessages:
 
         # Test found message
         found_data = websocket_message_samples["found"]
-        found_msg = FoundMessage(seed=found_data["seed"])
+        from internal.models import WeatherDetail
+        weather_detail = WeatherDetail(
+            spring_rain=found_data["weatherDetail"]["springRain"],
+            summer_rain=found_data["weatherDetail"]["summerRain"],
+            fall_rain=found_data["weatherDetail"]["fallRain"],
+            green_rain_day=found_data["weatherDetail"]["greenRainDay"]
+        )
+        found_msg = FoundMessage(seed=found_data["seed"], weather_detail=weather_detail)
         found_result = json.loads(found_msg.model_dump_json(by_alias=True))
         assert found_result == found_data
 

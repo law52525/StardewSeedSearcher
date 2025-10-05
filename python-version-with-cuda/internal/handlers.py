@@ -78,9 +78,21 @@ async def perform_search(request: SearchRequest) -> None:
             if pure_gpu_searcher.accelerator.is_available():
                 results = await pure_gpu_searcher.search_seeds_pure_gpu(request.start_seed, request.end_seed, request.output_limit)
                 
-                # Send found seeds
+                # Send found seeds with weather details
                 for seed in results:
                     found_message = FoundMessage(seed=seed)
+                    
+                    # If there are weather conditions, get weather details
+                    if request.weather_conditions:
+                        # Create a weather predictor to get details
+                        predictor = WeatherPredictor()
+                        predictor.set_enabled(True)
+                        for condition in request.weather_conditions:
+                            predictor.add_condition(condition)
+                        
+                        weather_detail = predictor.get_weather_detail(seed, request.use_legacy_random)
+                        found_message.weather_detail = weather_detail
+                    
                     await manager.broadcast(found_message.model_dump_json(by_alias=True))
                 
                 # Send completion message
@@ -227,8 +239,16 @@ async def worker_task(
                     
                     logger.info(f"Worker thread {worker_id} found matching seed: {seed}")
                     
-                    # Immediately push found seed
+                    # Create found message
                     found_message = FoundMessage(seed=seed)
+                    
+                    # If there's a weather predictor, get weather details
+                    for feature in worker_features:
+                        if isinstance(feature, WeatherPredictor) and feature.is_enabled():
+                            weather_detail = feature.get_weather_detail(seed, request.use_legacy_random)
+                            found_message.weather_detail = weather_detail
+                            break
+                    
                     await manager.broadcast(found_message.model_dump_json(by_alias=True))
                     
                     # Check if output limit reached

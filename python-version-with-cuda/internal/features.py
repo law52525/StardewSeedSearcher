@@ -109,22 +109,32 @@ class WeatherPredictor(SearchFeature):
         """Predict weather for first year spring/summer/fall (days 1-84)"""
         # Clear cache and reuse
         self._weather_cache.clear()
+
+        
+        # Summer special: Green rain day determination
+        year = 1  # First year
+        green_rain_seed = get_random_seed(year * 777, game_id, 0, 0, 0, use_legacy_random)
+        # Use same Random.Next() logic as C#
+        green_rain_days = [5, 6, 7, 14, 15, 16, 18, 23]
+        green_rain_day = green_rain_days[self._random_next(green_rain_seed, len(green_rain_days))]
         
         for absolute_day in range(1, 85):  # 1-84 inclusive
             season = (absolute_day - 1) // 28  # 0=Spring, 1=Summer, 2=Fall
             day_of_month = ((absolute_day - 1) % 28) + 1
             
-            is_rain = self._is_rainy_day(season, day_of_month, absolute_day, game_id, use_legacy_random)
+            is_rain = self._is_rainy_day(season, day_of_month, absolute_day, game_id, use_legacy_random, green_rain_day)
             self._weather_cache[absolute_day] = is_rain
         
         return self._weather_cache
     
-    def _is_rainy_day(self, season: int, day_of_month: int, absolute_day: int, game_id: int, use_legacy_random: bool) -> bool:
+    def _is_rainy_day(self, season: int, day_of_month: int, absolute_day: int, game_id: int, use_legacy_random: bool, green_rain_day: int) -> bool:
         """Determine if a specific day is rainy"""
         # Fixed weather rules
+        if day_of_month == 1:
+            return False  # Sunny
         
         if season == 0:  # Spring
-            if day_of_month in [1, 2, 4, 5]:
+            if day_of_month in [2, 4, 5]:
                 return False  # Sunny
             if day_of_month == 3:
                 return True  # Rainy
@@ -133,13 +143,6 @@ class WeatherPredictor(SearchFeature):
             # Spring continues to general logic below
             
         elif season == 1:  # Summer
-            # Summer special: Green rain day determination
-            year = 1  # First year
-            green_rain_seed = get_random_seed(year * 777, game_id, 0, 0, 0, use_legacy_random)
-            # Use same Random.Next() logic as C#
-            green_rain_days = [5, 6, 7, 14, 15, 16, 18, 23]
-            green_rain_day = green_rain_days[self._random_next(green_rain_seed, len(green_rain_days))]
-            
             if day_of_month == green_rain_day:
                 return True  # Green rain (counts as rainy)
             if day_of_month in [11, 28]:
@@ -220,3 +223,44 @@ class WeatherPredictor(SearchFeature):
                 rainy_days.append(day)
         
         return rainy_days
+    
+    def get_weather_detail(self, game_id: int, use_legacy_random: bool):
+        """Get detailed weather information"""
+        from internal.models import WeatherDetail
+        
+        weather = self.predict_weather(game_id, use_legacy_random)
+        
+        # Initialize rainy days for each season
+        spring_rain = []
+        summer_rain = []
+        fall_rain = []
+        
+        # Get green rain day
+        green_rain_day = self._get_green_rain_day(game_id, use_legacy_random)
+        
+        # Iterate through all weather, categorize by season
+        for absolute_day in range(1, 85):  # 1-84 inclusive
+            if weather.get(absolute_day, False):
+                season = (absolute_day - 1) // 28  # 0=Spring, 1=Summer, 2=Fall
+                day_of_month = ((absolute_day - 1) % 28) + 1
+                
+                if season == 0:  # Spring
+                    spring_rain.append(day_of_month)
+                elif season == 1:  # Summer
+                    summer_rain.append(day_of_month)
+                elif season == 2:  # Fall
+                    fall_rain.append(day_of_month)
+        
+        return WeatherDetail(
+            spring_rain=spring_rain,
+            summer_rain=summer_rain,
+            fall_rain=fall_rain,
+            green_rain_day=green_rain_day
+        )
+    
+    def _get_green_rain_day(self, game_id: int, use_legacy_random: bool) -> int:
+        """Get green rain day"""
+        year = 1  # First year
+        green_rain_seed = get_random_seed(year * 777, game_id, 0, 0, 0, use_legacy_random)
+        green_rain_days = [5, 6, 7, 14, 15, 16, 18, 23]
+        return green_rain_days[self._random_next(green_rain_seed, len(green_rain_days))]

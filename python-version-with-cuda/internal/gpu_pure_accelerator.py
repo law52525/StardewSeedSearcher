@@ -248,11 +248,14 @@ __device__ __inline__ int random_next_gpu(unsigned int seed, int max_value) {
     return (int)((unsigned long long)first_rand * max_value / 2147483647ULL);
 }
 
-__device__ __inline__ int is_rainy_day_gpu(int season, int day_of_month, int absolute_day, unsigned int game_id, int use_legacy_random) {
+__device__ __inline__ int is_rainy_day_gpu(int season, int day_of_month, int absolute_day, unsigned int game_id, int use_legacy_random, int green_rain_day) {
     // Fixed weather rules (same as Python version)
+    if (day_of_month == 1) { // 第一天固定晴天
+        return 0;  // Sunny
+    }
     
     if (season == 0) {  // Spring
-        if (day_of_month == 1 || day_of_month == 2 || day_of_month == 4 || day_of_month == 5) {
+        if (day_of_month == 2 || day_of_month == 4 || day_of_month == 5) {
             return 0;  // Sunny
         }
         if (day_of_month == 3) {
@@ -264,12 +267,7 @@ __device__ __inline__ int is_rainy_day_gpu(int season, int day_of_month, int abs
         // Spring continues to general logic below
         
     } else if (season == 1) {  // Summer
-        // Summer special: Green rain day determination
-        int year = 1;  // First year
-        unsigned int green_rain_seed = get_random_seed_gpu(year * 777, game_id, 0, 0, 0, use_legacy_random);
-        int green_rain_days[] = {5, 6, 7, 14, 15, 16, 18, 23};
-        int green_rain_day = green_rain_days[random_next_gpu(green_rain_seed, 8)];
-        
+        // Check green rain day (passed as parameter)
         if (day_of_month == green_rain_day) {
             return 1;  // Green rain (counts as rainy)
         }
@@ -319,6 +317,12 @@ extern "C" __global__ void weather_prediction_kernel(
     
     unsigned int game_id = (unsigned int)seeds[idx];
     
+    // Calculate green rain day once per seed (for summer)
+    int year = 1;  // First year
+    unsigned int green_rain_seed = get_random_seed_gpu(year * 777, game_id, 0, 0, 0, use_legacy_random);
+    int green_rain_days[] = {5, 6, 7, 14, 15, 16, 18, 23};
+    int green_rain_day = green_rain_days[random_next_gpu(green_rain_seed, 8)];
+    
     // Check each weather condition
     int matches = 1;
     for (int cond_idx = 0; cond_idx < num_conditions; cond_idx++) {
@@ -335,7 +339,7 @@ extern "C" __global__ void weather_prediction_kernel(
             int day_of_month = day;
             
             // Use the same weather prediction logic as Python
-            int is_rainy = is_rainy_day_gpu(season, day_of_month, season*28+day, game_id, use_legacy_random);
+            int is_rainy = is_rainy_day_gpu(season, day_of_month, season*28+day, game_id, use_legacy_random, green_rain_day);
             if (is_rainy) {
                 rain_days++;
             }

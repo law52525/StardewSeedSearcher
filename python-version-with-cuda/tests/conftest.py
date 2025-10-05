@@ -151,7 +151,13 @@ def websocket_message_samples():
         },
         "found": {
             "type": "found",
-            "seed": 12345
+            "seed": 12345,
+            "weatherDetail": {
+                "springRain": [3, 9, 14, 16, 28],
+                "summerRain": [6, 13, 14, 16, 20, 21, 23, 26],
+                "fallRain": [8, 11, 18, 20, 22],
+                "greenRainDay": 6
+            }
         },
         "complete": {
             "type": "complete",

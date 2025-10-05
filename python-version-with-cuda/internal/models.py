@@ -107,12 +107,23 @@ class ProgressMessage(WebSocketMessage):
     elapsed: float
 
 
+class WeatherDetail(BaseModel):
+    """Weather detail information"""
+    model_config = ConfigDict(populate_by_name=True)
+    
+    spring_rain: List[int] = Field(alias="springRain", description="Spring rainy days")
+    summer_rain: List[int] = Field(alias="summerRain", description="Summer rainy days")
+    fall_rain: List[int] = Field(alias="fallRain", description="Fall rainy days")
+    green_rain_day: int = Field(alias="greenRainDay", description="Green rain day")
+
+
 class FoundMessage(WebSocketMessage):
     """Found seed message"""
     model_config = ConfigDict(populate_by_name=True)
     
     type: str = "found"
     seed: int
+    weather_detail: Optional[WeatherDetail] = Field(None, alias="weatherDetail")
 
 
 class CompleteMessage(WebSocketMessage):
